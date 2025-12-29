@@ -5,5 +5,3 @@ export interface ChangeHistoryEntry {
   to: number
   note?: string
 }
-
-export default ChangeHistoryEntry
