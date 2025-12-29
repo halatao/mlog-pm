@@ -279,7 +279,6 @@ export default function MonthlyOverviewPage() {
                         Object.keys(rr.plannedByUser).forEach(k => { if (Number(rr.plannedByUser[Number(k)]) || Number(rr.loggedByUser[Number(k)])) participantIds.add(Number(k)) })
                         Object.keys(rr.loggedByUser).forEach(k => { if (Number(rr.plannedByUser[Number(k)]) || Number(rr.loggedByUser[Number(k)])) participantIds.add(Number(k)) })
                     })
-                    // order participants: PMs on the left, creatives on the right, others in the middle
                     const participants = (() => {
                         const pms: User[] = []
                         const creatives: User[] = []
