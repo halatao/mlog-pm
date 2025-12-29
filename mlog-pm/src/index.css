@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	color-scheme: light dark;
+}
+
+body {
+	margin: 0;
+	font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+/* Default dark background and light text for the app */
+@import './styles/theme.css';
+
+/* Use the theme variables for background/text. The app toggles dark via the `dark` class on root. */
+body {
+	background-color: var(--tp-bg);
+	color: var(--tp-text);
+}
+
+.app-surface {
+	background-color: var(--tp-surface);
+	color: var(--tp-text);
+}

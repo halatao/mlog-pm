@@ -1,0 +1,102 @@
+/* Design tokens for light/dark themes. Use class names like .tp-bg, .tp-card, .tp-text, .tp-muted, etc. */
+:root {
+  /* Light theme defaults: slightly-graded background so white cards stand out */
+  --tp-bg: #f3f4f6; /* page background */
+  --tp-surface: #ffffff; /* surface / row background */
+  --tp-card: #ffffff; /* card background */
+  --tp-modal-bg: #ffffff;
+  --tp-text: #111827;
+  --tp-muted: #6b7280;
+  --tp-accent: #10b981; /* green-500 */
+  --tp-accent-600: #059669;
+  --tp-danger: #ef4444;
+  --tp-border: #e5e7eb;
+  --tp-muted-bg: rgba(0,0,0,0.04);
+  /* Role / status tokens (RGB-compatible hex values kept for simplicity) */
+  --tp-positive: #10a37f;
+  --tp-role-pm: #0f7bff; /* blue */
+  --tp-role-creative: #8b5cf6; /* purple */
+  --tp-role-inactive: #64748b; /* slate */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+  --tp-bg: #0b1220;
+  --tp-surface: #0f1724;
+  --tp-card: #0f1724;
+  --tp-modal-bg: #1e293b;
+  --tp-text: #e6eef6;
+  --tp-muted: #9aa6b2;
+  --tp-accent: #34d399; /* green-400 */
+  --tp-accent-600: #10b981;
+  --tp-danger: #fb7185;
+  --tp-border: #1f2937;
+  --tp-muted-bg: rgba(255,255,255,0.02);
+  --tp-positive: #16a37f;
+  --tp-role-pm: #0f7bff;
+  --tp-role-creative: #7c3aed;
+  --tp-role-inactive: #9aa6b2;
+  }
+}
+
+
+/* Utility classes to use in JSX instead of many hard-coded tailwind color classes. */
+.tp-bg { background-color: var(--tp-bg); }
+.tp-surface { background-color: var(--tp-surface); }
+.tp-card { background-color: var(--tp-card); }
+.tp-text { color: var(--tp-text); }
+.tp-muted { color: var(--tp-muted); }
+.tp-accent { color: var(--tp-accent); }
+.tp-accent-bg { background-color: var(--tp-accent); color: #fff; }
+.tp-accent-600 { background-color: var(--tp-accent-600); color: #fff; }
+.tp-danger { color: var(--tp-danger); }
+.tp-border { border-color: var(--tp-border); }
+
+/* Buttons */
+.tp-btn { background-color: transparent; color: var(--tp-text); border: 1px solid var(--tp-border); }
+.tp-btn-accent { background-color: var(--tp-accent); color: #fff; }
+.tp-btn-ghost { background: transparent; color: var(--tp-text); }
+
+/* Small helpers */
+.tp-muted-bg { background-color: var(--tp-muted-bg); }
+.tp-kpi { background-color: transparent; color: var(--tp-text); }
+
+/* Row styling helper for table rows (apply class 'row-odd' to tr) */
+.row-odd:nth-child(odd) { background-color: var(--tp-surface); }
+
+/* simple hover helpers using current color tokens */
+.hover-accent:hover { background-color: var(--tp-accent-600); color: #fff; }
+.hover-muted:hover { background-color: var(--tp-muted); color: var(--tp-text); }
+
+/* Ensure these utilities don't conflict with Tailwind — kept small and explicit */
+
+/* Backdrop used behind modals — adapts to light/dark via variables */
+.tp-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99990;
+  background-color: rgba(0,0,0,0.82);
+}
+.dark .tp-backdrop, :root.dark .tp-backdrop, [data-theme='dark'] .tp-backdrop {
+  background-color: rgba(0,0,0,0.95);
+}
+
+/* Make cards fully opaque and add a stronger shadow so modals feel solid */
+.tp-card {
+  background-color: var(--tp-card);
+  /* ensure solid background even if other rules try to add opacity */
+  background-clip: padding-box;
+  /* border: 1px solid var(--tp-border); */
+  box-shadow: 0 2px 10px rgba(201, 197, 197, 0.05);
+}
+
+/* Positive / profit color */
+.tp-positive { color: var(--tp-positive); }
+
+.role-pm { background-color: var(--tp-role-pm); color: white; }
+.role-creative { background-color: var(--tp-role-creative); color: white; }
+.role-inactive { background-color: var(--tp-role-inactive); color: white; }
+
+.status-logged { background-color: var(--tp-accent); }
+.status-none { background-color: var(--tp-role-inactive); }
+.status-over { background-color: var(--tp-danger); }
