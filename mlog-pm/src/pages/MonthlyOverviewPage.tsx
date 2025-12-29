@@ -334,6 +334,7 @@ export default function MonthlyOverviewPage() {
                                         <col style={{ width: '10rem' }} />
                                         <col style={{ width: '10rem' }} />
                                         <col style={{ width: '10rem' }} />
+                                        <col style={{ width: '10rem' }} />
                                     </colgroup>
                                     <tbody>
                                         <tr className="tp-muted-bg text-xs tp-muted border-b tp-border">

@@ -58,7 +58,18 @@ const CapacityMatrix = forwardRef<MatrixHandle, AllProps>(function CapacityMatri
         return () => window.removeEventListener('beforeunload', onBeforeUnload)
     }, [dirty])
 
-    const visibleUsers = useMemo(() => (users || []).filter(u => isActiveUser(u)), [users])
+    const visibleUsers = useMemo(() => {
+        const active = (users || []).filter(u => isActiveUser(u))
+        const pms: User[] = []
+        const creatives: User[] = []
+        const others: User[] = []
+        active.forEach(u => {
+            if ((u as User).isActivePM) pms.push(u)
+            else if ((u as User).isActiveCreative) creatives.push(u)
+            else others.push(u)
+        })
+        return [...pms, ...others, ...creatives]
+    }, [users])
 
     function keyFor(userId: number, milestoneId: number, month: number, year: number) {
         return `${userId}-${milestoneId}-${month}-${year}`
