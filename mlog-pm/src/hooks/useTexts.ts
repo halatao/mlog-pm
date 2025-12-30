@@ -1,5 +1,8 @@
 export type Texts = {
   capacityMatrix: {
+    title?: string;
+    searchPlaceholder?: string;
+    onlyParticipants?: string;
     milestoneHeader: {
       incomeLabel: string;
       doneLabel: string;
@@ -22,6 +25,12 @@ export type Texts = {
     };
     headers: {
       milestone?: string;
+      person?: string;
+      capacity?: string;
+      assigned?: string;
+      remaining?: string;
+      loggedProject?: string;
+      loggedTotal?: string;
       month: string;
       planned: string;
       value: string;
@@ -92,6 +101,7 @@ export type Texts = {
     close: string;
   };
   general: {
+    reset?: string;
     loading: string;
     errorPrefix: string;
     notFound: string;
@@ -146,6 +156,9 @@ export default function useTexts(): Texts {
         predictedProfit: "Pred. zisk",
       },
       gotoEmployeeCapacity: "Přejít na kapacitu zaměstnanců",
+      title: "Kapacita zaměstnanců — {month}/{year}",
+      searchPlaceholder: "Hledat jméno",
+      onlyParticipants: "Pouze účastníci projektu",
     },
     projectHeader: {
       plan: "Plán",
@@ -227,6 +240,7 @@ export default function useTexts(): Texts {
         overview: "Měsíční přehled",
         myProjects: "Moje projekty",
       },
+      reset: "Reset",
     },
   };
 }
