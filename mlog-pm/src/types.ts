@@ -24,6 +24,8 @@ export interface ProjectMilestone {
   donePercent: number
   startMonth: number
   startYear: number
+  endMonth?: number
+  endYear?: number
 }
 
 export interface PlannedCapacity {

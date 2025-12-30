@@ -8,6 +8,7 @@
   --tp-text: #111827;
   --tp-muted: #6b7280;
   --tp-accent: #10b981; /* green-500 */
+  --tp-accent-alt: #f97316; /* orange-500 for active controls */
   --tp-accent-600: #059669;
   --tp-danger: #ef4444;
   --tp-border: #e5e7eb;
@@ -28,6 +29,7 @@
   --tp-text: #e6eef6;
   --tp-muted: #9aa6b2;
   --tp-accent: #34d399; /* green-400 */
+  --tp-accent-alt: #fb923c; /* orange-400 for active controls in dark */
   --tp-accent-600: #10b981;
   --tp-danger: #fb7185;
   --tp-border: #1f2937;
@@ -55,6 +57,7 @@
 /* Buttons */
 .tp-btn { background-color: transparent; color: var(--tp-text); border: 1px solid var(--tp-border); }
 .tp-btn-accent { background-color: var(--tp-accent); color: #fff; }
+.tp-btn-accent-alt { background-color: var(--tp-accent-alt); color: #fff; }
 .tp-btn-ghost { background: transparent; color: var(--tp-text); }
 
 /* Small helpers */

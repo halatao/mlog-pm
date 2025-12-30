@@ -26,8 +26,6 @@ export default function MonthlyOverviewPage() {
         }
     }
 
-    // removed unused onPickMonth (previously used by a hidden month input)
-
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [users, setUsers] = useState<User[]>([])
@@ -44,11 +42,14 @@ export default function MonthlyOverviewPage() {
 
     const [showPlan, setShowPlan] = useState(true)
     const [showLogged, setShowLogged] = useState(true)
-    // employees table filters
     const [empSearch, setEmpSearch] = useState('')
     const [empFilterProject, setEmpFilterProject] = useState<string>('')
     const [empFilterRole, setEmpFilterRole] = useState<string>('')
     const [empOnlyParticipants, setEmpOnlyParticipants] = useState(true)
+    const [empEditMode, setEmpEditMode] = useState(false)
+    const [empEditedCapacity, setEmpEditedCapacity] = useState<Record<number, number> | null>(null)
+    const [empSavedCapacity, setEmpSavedCapacity] = useState<Record<number, number> | null>(null)
+    const [empCellEditingCapacityUserId, setEmpCellEditingCapacityUserId] = useState<number | null>(null)
 
     useEffect(() => {
         let mounted = true
@@ -63,39 +64,58 @@ export default function MonthlyOverviewPage() {
 
                 await Promise.all(ps.map(async (p) => {
                     const [milestones] = await Promise.all([fetchMilestones(p.id)])
-                    // load planned and logged for project
                     const planned = await fetchPlannedCapacities(p.id)
                     const logged = await fetchLoggedCapacities(p.id)
 
-                    // project-level aggregates (for project profit columns)
+                    const plannedByMilestone = planned.reduce((map, entry) => {
+                        const arr = map.get(entry.milestoneId) || []
+                        arr.push(entry)
+                        map.set(entry.milestoneId, arr)
+                        return map
+                    }, new Map<number, typeof planned>())
+
+                    const loggedByMilestone = logged.reduce((map, entry) => {
+                        const arr = map.get(entry.milestoneId) || []
+                        arr.push(entry)
+                        map.set(entry.milestoneId, arr)
+                        return map
+                    }, new Map<number, typeof logged>())
+
+                    const usersById = new Map(us.map(u => [u.id, u]))
 
                     for (const ms of milestones) {
-                        // find planned/logged entries for this milestone in selected month
-                        const plannedEntriesForMonth = planned.filter(pp => pp.milestoneId === ms.id && pp.year === y && pp.month === m)
-                        const loggedEntriesForMonth = logged.filter(ll => ll.milestoneId === ms.id && ll.year === y && ll.month === m)
+                        const allPlanned = plannedByMilestone.get(ms.id) || []
+                        const plannedEntriesForMonth = allPlanned.filter(pp => pp.year === y && pp.month === m)
+                        const allLogged = loggedByMilestone.get(ms.id) || []
+                        const loggedEntriesForMonth = allLogged.filter(ll => ll.year === y && ll.month === m)
 
-                        if (plannedEntriesForMonth.length === 0 && loggedEntriesForMonth.length === 0) continue
+                        const plannedByUser = Object.fromEntries(us.map(u => [u.id, 0])) as Record<number, number>
+                        const loggedByUser = Object.fromEntries(us.map(u => [u.id, 0])) as Record<number, number>
 
-                        const plannedByUser: Record<number, number> = {}
-                        const loggedByUser: Record<number, number> = {}
-                        us.forEach(u => { plannedByUser[u.id] = 0; loggedByUser[u.id] = 0 })
+                        for (const pv of plannedEntriesForMonth) plannedByUser[pv.userId] = (plannedByUser[pv.userId] || 0) + (pv.plannedHours || 0)
+                        for (const lv of loggedEntriesForMonth) loggedByUser[lv.userId] = (loggedByUser[lv.userId] || 0) + (lv.loggedHours || 0)
 
-                        plannedEntriesForMonth.forEach(pv => { plannedByUser[pv.userId] = (plannedByUser[pv.userId] || 0) + (pv.plannedHours || 0) })
-                        loggedEntriesForMonth.forEach(lv => { loggedByUser[lv.userId] = (loggedByUser[lv.userId] || 0) + (lv.loggedHours || 0) })
+                        const plannedTotalForMilestone = allPlanned.reduce((s, pv) => s + (pv.plannedHours || 0), 0)
+                        const plannedThisMonthTotal = plannedEntriesForMonth.reduce((s, pv) => s + (pv.plannedHours || 0), 0)
 
-                        // compute month value — prorate incomeAmount by share of planned hours in this month vs milestone total planned
-                        const totalPlannedForMilestone = planned.filter(pp => pp.milestoneId === ms.id).reduce((s, it) => s + (it.plannedHours || 0), 0)
-                        const incomeForMonth = (totalPlannedForMilestone > 0 && ms.incomeAmount) ? Math.round((ms.incomeAmount || 0) * (ms.donePercent / 100)) : 0
+                        const incomeForMonth = (ms.endMonth === m && ms.endYear === y) ? Math.round(ms.incomeAmount) : 0
 
-                        // predicted cost = sum planned for month * user cost
                         const predictedCost = Object.entries(plannedByUser).reduce((s, [userIdStr, hrs]) => {
-                            const user = us.find(u => u.id === Number(userIdStr))
+                            const user = usersById.get(Number(userIdStr))
                             return s + (hrs || 0) * (user?.costPerHour || 0)
                         }, 0)
 
-                        const predictedProfit = Math.round((incomeForMonth || 0) - predictedCost)
+                        const predictedProfit = incomeForMonth - predictedCost
 
-                        allRows.push({ project: p, milestone: ms, plannedByUser, loggedByUser, incomeForMonth, valueForMonth: incomeForMonth, predictedCost, predictedProfit })
+                        const numberOfMonths = ((ms.endYear ?? ms.startYear) - ms.startYear) * 12 + ((ms.endMonth ?? ms.startMonth) - ms.startMonth + 1)
+                        let valueForMonth = 0
+                        if (plannedTotalForMilestone > 0) {
+                            valueForMonth = Math.round((ms.incomeAmount || 0) * (plannedThisMonthTotal / plannedTotalForMilestone))
+                        } else {
+                            valueForMonth = numberOfMonths ? Math.round((ms.incomeAmount || 0) / numberOfMonths) : 0
+                        }
+
+                        allRows.push({ project: p, milestone: ms, plannedByUser, loggedByUser, incomeForMonth, valueForMonth, predictedCost, predictedProfit })
                     }
                 }))
 
@@ -115,33 +135,27 @@ export default function MonthlyOverviewPage() {
     const title = useMemo(() => texts.pages.monthlyOverview.title.split('—')[0].trim(), [texts])
 
     function fmtMoney(n: number) { return n.toLocaleString('cs-CZ') + '\u00A0Kč' }
+    function fmtNumber(n: number) { return n.toLocaleString('cs-CZ') }
 
-    // per-user aggregates across all rows for summary lines
     const userAssigned: Record<number, number> = {}
     const userLoggedInProjects: Record<number, number> = {}
     const userLoggedTotal: Record<number, number> = {}
     users.forEach(u => { userAssigned[u.id] = 0; userLoggedInProjects[u.id] = 0; userLoggedTotal[u.id] = 0 })
 
-    // Local helper type for optional user properties used only in this view
     type UserExtras = { capacity?: number; monthlyCapacity?: number; role?: string }
 
-    // role helpers are shared in src/utils/roles
-
-    // list of projects present in rows (for filter select)
     const projectsForFilter = useMemo(() => {
         const map = new Map<number, Project>()
         rows.forEach(r => map.set(r.project.id, r.project))
         return Array.from(map.values())
     }, [rows])
 
-    // roles found on users (derived from flags)
     const rolesForFilter = useMemo(() => {
         const set = new Set<string>()
         users.forEach(u => set.add(getUserRole(u)))
         return Array.from(set)
     }, [users])
 
-    // map user -> set of project ids they participate in (based on rows)
     const userProjectMap = useMemo(() => {
         const map = new Map<number, Set<number>>()
         rows.forEach(r => {
@@ -204,15 +218,13 @@ export default function MonthlyOverviewPage() {
         for (const [uidStr, hrs] of Object.entries(r.loggedByUser)) userLoggedInProjects[Number(uidStr)] += hrs
     }
 
-    // compute logged total across all projects for the month by refetching per-project logged entries (simpler: rows contain logged for displayed projects; for total logged we reuse same value here)
-    // NOTE: in real API we'd fetch all logs for month. For now use userLoggedInProjects as total as well.
     Object.keys(userLoggedInProjects).forEach(k => userLoggedTotal[Number(k)] = userLoggedInProjects[Number(k)])
 
     if (loading) return <div>{texts.general.loading}</div>
     if (error) return <div>{texts.general.errorPrefix} {String(error)}</div>
 
     return (
-        <div className="max-w-screen-2xl mx-auto p-6 space-y-8">
+        <div className="max-w-screen-2xl mx-auto p-6 space-y-6">
             <div className="flex items-start justify-between">
                 <div>
                     <h1 className="text-3xl font-semibold tp-text">{title}</h1>
@@ -221,21 +233,6 @@ export default function MonthlyOverviewPage() {
 
                 <div className="flex items-center gap-4">
                     <MonthPager year={y} month={m} onChange={(ny, nm) => replaceYearMonth(ny, nm)} />
-                </div>
-            </div>
-
-            {/* GLOBAL LEGEND: show roles and status once at the top */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-6 text-sm tp-muted">
-                    <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full role-pm" /> {texts.capacityMatrix.roles.pm}</div>
-                    <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full role-creative" /> {texts.capacityMatrix.roles.creative}</div>
-                    <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full role-inactive" /> {texts.capacityMatrix.roles.inactive}</div>
-                </div>
-
-                <div className="flex items-center gap-6 text-xs tp-muted">
-                    <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full status-logged"></span><span>Zalogováno</span></div>
-                    <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full status-none"></span><span>Bez logů</span></div>
-                    <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full status-over"></span><span>Překročeno (logy &gt; plán)</span></div>
                 </div>
             </div>
 
@@ -260,6 +257,19 @@ export default function MonthlyOverviewPage() {
                 </div>
             </div>
 
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-6 text-sm tp-muted">
+                    <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full role-pm" /> {texts.capacityMatrix.roles.pm}</div>
+                    <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full role-creative" /> {texts.capacityMatrix.roles.creative}</div>
+                    <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full role-inactive" /> {texts.capacityMatrix.roles.inactive}</div>
+                </div>
+
+                <div className="flex items-center gap-6 text-sm tp-muted">
+                    <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full status-logged" /> <span>Zalogováno</span></div>
+                    <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full status-none" /> <span>Bez logů</span></div>
+                    <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full status-over" /> <span>Překročeno (logy &gt; plán)</span></div>
+                </div>
+            </div>
 
             <div id="projects" className="space-y-6">
                 {Object.values(rows.reduce((acc, r) => {
@@ -273,7 +283,6 @@ export default function MonthlyOverviewPage() {
                     const projectPredictedProfit = projectIncome - projectPredictedCost
                     const projectProfitPct = projectIncome > 0 ? Math.round((projectPredictedProfit / projectIncome) * 1000) / 10 : 0
 
-                    // participants for this project (users with any planned/logged in project)
                     const participantIds = new Set<number>()
                     projRows.forEach(rr => {
                         Object.keys(rr.plannedByUser).forEach(k => { if (Number(rr.plannedByUser[Number(k)]) || Number(rr.loggedByUser[Number(k)])) participantIds.add(Number(k)) })
@@ -294,7 +303,6 @@ export default function MonthlyOverviewPage() {
 
                     return (
                         <div id={`proj-${group.project.id}`} key={`proj-${group.project.id}`} className="border tp-border rounded-xl tp-muted-bg">
-                            {/* PROJECT HEADER */}
                             <div className="px-6 py-5 border-b tp-border space-y-4">
                                 <div className="flex items-start justify-between">
                                     <div>
@@ -310,50 +318,80 @@ export default function MonthlyOverviewPage() {
                                             <div className="font-semibold tp-text">{projectIncome ? fmtMoney(projectIncome) : '—'}</div>
                                         </div>
                                         <div>
-                                            <div className="text-xs tp-muted">Predikce zisku</div>
+                                            <div className="text-xs tp-muted">Celková predikce zisku</div>
                                             <div className="font-semibold tp-positive">{projectPredictedProfit ? fmtMoney(projectPredictedProfit) : '—'}</div>
                                         </div>
                                         <div>
-                                            <div className="text-xs tp-muted">Zisk / příjem</div>
+                                            <div className="text-xs tp-muted">Celkový zisk / příjem</div>
                                             <div className="font-semibold tp-positive">{projectIncome ? `${projectProfitPct} %` : '—'}</div>
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* per-project legend removed — single global legend shown at top */}
                             </div>
 
-                            {/* MILESTONES MATRIX */}
                             <div className="overflow-x-auto">
                                 <table className="min-w-full border-collapse">
                                     <colgroup>
-                                        <col style={{ width: '14rem' }} />
+                                        <col style={{ width: '16rem' }} />
                                         {participants.map(p => (
-                                            <col key={`col-${group.project.id}-${p.id}`} style={{ width: '5rem' }} />
+                                            <col key={`col-${group.project.id}-${p.id}`} style={{ width: '6rem' }} />
                                         ))}
+                                        <col style={{ width: '9rem' }} />
                                         <col style={{ width: '10rem' }} />
-                                        <col style={{ width: '10rem' }} />
-                                        <col style={{ width: '10rem' }} />
-                                        <col style={{ width: '10rem' }} />
+                                        <col style={{ width: '9rem' }} />
+                                        <col style={{ width: '9rem' }} />
+                                        <col style={{ width: '9rem' }} />
+                                        <col style={{ width: '9rem' }} />
                                     </colgroup>
                                     <tbody>
                                         <tr className="tp-muted-bg text-xs tp-muted border-b tp-border">
-                                            <td className="px-4 py-2">Milník</td>
+                                            <th scope="col" className="px-4 py-2 text-left">Milník</th>
                                             {participants.map(p => (
-                                                <td key={`hdr-${group.project.id}-${p.id}`} className="text-center font-semibold">
+                                                <th key={`hdr-${group.project.id}-${p.id}`} scope="col" className="text-center font-semibold">
                                                     <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-xs font-semibold ${getRoleColorClass(getUserRole(p))}`} aria-label={getUserRole(p)}>
                                                         {getInitials(p)}
                                                     </span>
-                                                </td>
+                                                </th>
                                             ))}
-                                            <td className='px-3 py-2 text-right'>Hodnota (Kč)</td>
-                                            <td className="px-3 py-2 text-right">Plán (Kč)</td>
-                                            <td className="px-3 py-2 text-right">Čerp. (Kč)</td>
-                                            <td className="px-3 py-2 pr-6 text-right">Pred. zisk (Kč)</td>
+                                            <th scope="col" className='px-3 py-2 text-right'>
+                                                <div className="flex flex-col items-end">
+                                                    <span>Příjem</span>
+                                                    <span className="text-xs tp-muted">(Kč)</span>
+                                                </div>
+                                            </th>
+                                            <th scope="col" className='px-3 py-2 text-right'>
+                                                <div className="flex flex-col items-end">
+                                                    <span>Hodnota</span>
+                                                    <span className="text-xs tp-muted">(Kč)</span>
+                                                </div>
+                                            </th>
+                                            <th scope="col" className="px-3 py-2 text-right">
+                                                <div className="flex flex-col items-end">
+                                                    <span>Plán</span>
+                                                    <span className="text-xs tp-muted">(Kč)</span>
+                                                </div>
+                                            </th>
+                                            <th scope="col" className="px-3 py-2 text-right">
+                                                <div className="flex flex-col items-end">
+                                                    <span>Čerp.</span>
+                                                    <span className="text-xs tp-muted">(Kč)</span>
+                                                </div>
+                                            </th>
+                                            <th scope="col" className="px-3 py-2 pr-6 text-right">
+                                                <div className="flex flex-col items-end">
+                                                    <span>Pred. náklad</span>
+                                                    <span className="text-xs tp-muted">(Kč)</span>
+                                                </div>
+                                            </th>
+                                            <th scope="col" className="px-3 py-2 pr-6 text-right">
+                                                <div className="flex flex-col items-end">
+                                                    <span>Pred. zisk</span>
+                                                    <span className="text-xs tp-muted">(Kč)</span>
+                                                </div>
+                                            </th>
                                         </tr>
 
                                         {projRows.map((rr, idx2) => {
-                                            // plan in CZK: sum of planned hours * user's tariff (costPerHour)
                                             const planCzk = Object.entries(rr.plannedByUser).reduce((s, [uidStr, hrs]) => {
                                                 const user = users.find(u => u.id === Number(uidStr))
                                                 return s + (hrs || 0) * (user?.costPerHour || 0)
@@ -373,11 +411,14 @@ export default function MonthlyOverviewPage() {
                                                             <div className={`w-2 h-2 mx-auto mt-1 rounded-full ${((rr.loggedByUser[p.id] || 0) > (rr.plannedByUser[p.id] || 0)) ? 'status-over' : (rr.loggedByUser[p.id] ? 'status-logged' : 'status-none')}`} title={rr.loggedByUser[p.id] ? `Zalogováno: ${rr.loggedByUser[p.id]}h` : 'Bez logů'} />
                                                         </td>
                                                     ))}
-
-                                                    <td className="text-right">{rr.valueForMonth ? fmtMoney(rr.valueForMonth) : '—'}</td>
-                                                    <td className="text-right">{planCzk ? fmtMoney(planCzk) : '—'}</td>
-                                                    <td className="text-right">{loggedCost ? fmtMoney(loggedCost) : '—'}</td>
-                                                    <td className="text-right tp-positive font-semibold pr-6">{rr.predictedProfit ? fmtMoney(rr.predictedProfit) : '—'}</td>
+                                                    <td className="text-right">{rr.incomeForMonth ? fmtNumber(rr.incomeForMonth) : '—'}</td>
+                                                    <td className="text-right">{rr.valueForMonth ? fmtNumber(rr.valueForMonth) : '—'}</td>
+                                                    <td className="text-right">{planCzk ? fmtNumber(planCzk) : '—'}</td>
+                                                    <td className="text-right">{loggedCost ? fmtNumber(loggedCost) : '—'}</td>
+                                                    <td className="text-right pr-6">{rr.predictedCost ? fmtNumber(rr.predictedCost) : '—'}</td>
+                                                    <td className={`text-right ${typeof rr.predictedProfit === 'number' && rr.predictedProfit < 0 ? 'tp-danger' : 'tp-positive'} font-semibold pr-6`}>
+                                                        {typeof rr.predictedProfit === 'number' ? fmtNumber(rr.predictedProfit) : '—'}
+                                                    </td>
                                                 </tr>
                                             )
                                         })}
@@ -389,10 +430,36 @@ export default function MonthlyOverviewPage() {
                 })}
             </div>
 
-            {/* EMPLOYEES SUMMARY TABLE (moved below projects) */}
             <div id="employee-capacity" className="tp-muted-bg border tp-border rounded-xl p-4">
-                <h3 className="text-lg font-semibold tp-text mb-3">Kapacita zaměstnanců — {String(m).padStart(2, '0')} / {y}</h3>
-                {/* legend removed from capacity list — using the global legend at the top of the page */}
+                <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-lg font-semibold tp-text">Kapacita zaměstnanců — {String(m).padStart(2, '0')} / {y}</h3>
+                    <div className="ml-auto">
+                        <button
+                            type="button"
+                            aria-pressed={empEditMode}
+                            onClick={() => {
+                                if (!empEditMode) {
+                                    // enter edit mode: base values come from saved (if any) or user's capacity
+                                    const base: Record<number, number> = {}
+                                    users.forEach(u => {
+                                        const extra = u as UserExtras
+                                        const baseCapacity = empSavedCapacity?.[u.id] ?? (extra.capacity ?? extra.monthlyCapacity ?? 160)
+                                        base[u.id] = baseCapacity
+                                    })
+                                    setEmpEditedCapacity(base)
+                                    setEmpEditMode(true)
+                                } else {
+                                    // exit edit mode: clear editing state
+                                    setEmpEditMode(false)
+                                    setEmpEditedCapacity(null)
+                                    setEmpCellEditingCapacityUserId(null)
+                                }
+                            }}
+                            className={`px-3 py-1 text-sm rounded focus:outline-none ${empEditMode ? 'tp-btn-accent-alt' : 'tp-card tp-text'}`}>
+                            {texts.projectHeader.edit}
+                        </button>
+                    </div>
+                </div>
                 <div className="overflow-x-auto">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
                         <div className="flex items-center gap-2">
@@ -428,19 +495,20 @@ export default function MonthlyOverviewPage() {
                         <thead>
                             <tr className="tp-muted text-xs border-b tp-border">
                                 <th className="px-4 py-3 text-left">Osoba</th>
-                                <th className="px-4 py-3 text-right">Kapacita</th>
-                                <th className="px-4 py-3 text-right">Přiděleno</th>
-                                <th className="px-4 py-3 text-right">Zbývá</th>
-                                <th className="px-4 py-3 text-right">Zalog. projekty</th>
-                                <th className="px-4 py-3 text-right">Zalog. celkem</th>
+                                <th className="px-4 py-3 text-center">Kapacita</th>
+                                <th className="px-4 py-3 text-center">Přiděleno</th>
+                                <th className="px-4 py-3 text-center">Zbývá</th>
+                                <th className="px-4 py-3 text-center">Zalog. projekty (výše)</th>
+                                <th className="px-4 py-3 text-center">Zalog. celkem</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredUsers.map(u => {
                                 const extra = u as UserExtras
-                                const capacity = extra.capacity ?? extra.monthlyCapacity ?? 160
+                                const capacity = empSavedCapacity?.[u.id] ?? (empEditedCapacity?.[u.id] ?? (extra.capacity ?? extra.monthlyCapacity ?? 160))
                                 const role = getUserRole(u)
-                                const assigned = userAssigned[u.id] || 0
+                                const baseAssigned = userAssigned[u.id] || 0
+                                const assigned = baseAssigned
                                 const loggedProj = userLoggedInProjects[u.id] || 0
                                 const loggedTotal = userLoggedTotal[u.id] || 0
                                 const remaining = capacity - assigned
@@ -453,11 +521,37 @@ export default function MonthlyOverviewPage() {
                                                 <div className="font-medium tp-text">{`${u.firstName || ''} ${u.lastName || ''}`.trim() || u.shortName}</div>
                                             </div>
                                         </td>
-                                        <td className="px-4 py-3 text-right">{String(capacity)}h</td>
-                                        <td className="px-4 py-3 text-right">{String(assigned)}h</td>
-                                        <td className={`px-4 py-3 text-right ${remaining >= 0 ? 'tp-positive' : 'tp-danger'} font-semibold`}>{remainingLabel}</td>
-                                        <td className="px-4 py-3 text-right">{String(loggedProj)}h</td>
-                                        <td className="px-4 py-3 text-right">{String(loggedTotal)}h</td>
+                                        <td className="px-4 py-3 text-center">
+                                            {empEditMode ? (
+                                                empCellEditingCapacityUserId === u.id ? (
+                                                    <input
+                                                        autoFocus
+                                                        className="w-16 px-2 py-1 text-sm text-center border rounded tp-card tp-text tp-border focus:ring-1"
+                                                        value={String(empEditedCapacity?.[u.id] ?? capacity)}
+                                                        onChange={(e) => {
+                                                            const v = Number(e.target.value || 0)
+                                                            setEmpEditedCapacity(prev => ({ ...(prev || {}), [u.id]: v }))
+                                                        }}
+                                                        onBlur={() => {
+                                                            const val = Number(empEditedCapacity?.[u.id] ?? capacity)
+                                                            setEmpSavedCapacity(prev => ({ ...(prev || {}), [u.id]: val }))
+                                                            setEmpCellEditingCapacityUserId(null)
+                                                        }}
+                                                        onKeyDown={(e) => { if (e.key === 'Enter') (e.currentTarget as HTMLInputElement).blur() }}
+                                                    />
+                                                ) : (
+                                                    <div className={`text-sm ${empEditMode ? 'cursor-pointer' : ''}`} onClick={() => { setEmpCellEditingCapacityUserId(u.id); if (!empEditedCapacity) { const base: Record<number, number> = {}; users.forEach(uu => { const ex = uu as UserExtras; base[uu.id] = empSavedCapacity?.[uu.id] ?? (ex.capacity ?? ex.monthlyCapacity ?? 160) }); setEmpEditedCapacity(base) } }}>
+                                                        {String(empEditedCapacity?.[u.id] ?? capacity)}h
+                                                    </div>
+                                                )
+                                            ) : (
+                                                String(capacity) + 'h'
+                                            )}
+                                        </td>
+                                        <td className="px-4 py-3 text-center align-middle">{String(assigned) + 'h'}</td>
+                                        <td className={`px-4 py-3 text-center ${remaining >= 0 ? 'tp-positive' : 'tp-danger'} font-semibold`}>{remainingLabel}</td>
+                                        <td className="px-4 py-3 text-center">{String(loggedProj)}h</td>
+                                        <td className="px-4 py-3 text-center">{String(loggedTotal)}h</td>
                                     </tr>
                                 )
                             })}

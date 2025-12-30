@@ -50,11 +50,6 @@ export default function MilestoneEditModal({ milestone, open, onClose, onSave }:
                     <label className="text-sm">{texts.milestoneModal.incomeLabel}
                         <input type="number" className="w-full mt-1 p-2 tp-text rounded border tp-border" value={local.incomeAmount ?? 0} onChange={e => setLocal({ ...local, incomeAmount: Number(e.target.value) })} />
                     </label>
-
-                    <label className="text-sm">Hotovo (%)
-                        <input type="number" min={0} max={100} className="w-full mt-1 p-2 tp-text rounded border tp-border" value={local.donePercent ?? 0} onChange={e => setLocal({ ...local, donePercent: Number(e.target.value) })} />
-                    </label>
-
                     <label className="text-sm">{texts.milestoneModal.startMonthLabel}
                         <div className="flex gap-2 mt-1">
                             <select
@@ -85,6 +80,41 @@ export default function MilestoneEditModal({ milestone, open, onClose, onSave }:
                                 onChange={e => setLocal({ ...local, startYear: Number(e.target.value) })}
                             />
                         </div>
+                    </label>
+
+                    <label className="text-sm">Konec
+                        <div className="flex gap-2 mt-1">
+                            <select
+                                className="w-2/3 p-2 tp-text rounded border tp-border"
+                                value={local.endMonth ?? local.startMonth}
+                                onChange={e => setLocal({ ...local, endMonth: Number(e.target.value) })}
+                            >
+                                <option value={1}>Leden</option>
+                                <option value={2}>Únor</option>
+                                <option value={3}>Březen</option>
+                                <option value={4}>Duben</option>
+                                <option value={5}>Květen</option>
+                                <option value={6}>Červen</option>
+                                <option value={7}>Červenec</option>
+                                <option value={8}>Srpen</option>
+                                <option value={9}>Září</option>
+                                <option value={10}>Říjen</option>
+                                <option value={11}>Listopad</option>
+                                <option value={12}>Prosinec</option>
+                            </select>
+
+                            <input
+                                type="number"
+                                className="w-1/3 p-2 tp-text rounded border tp-border"
+                                value={local.endYear ?? local.startYear}
+                                min={1970}
+                                max={2100}
+                                onChange={e => setLocal({ ...local, endYear: Number(e.target.value) })}
+                            />
+                        </div>
+                    </label>
+                    <label className="text-sm">Hotovo (%)
+                        <input type="number" min={0} max={100} className="w-full mt-1 p-2 tp-text rounded border tp-border" value={local.donePercent ?? 0} onChange={e => setLocal({ ...local, donePercent: Number(e.target.value) })} />
                     </label>
                 </div>
 

@@ -20,7 +20,7 @@ export default function PlanLoggedControls({ showPlan = true, showLogged = true,
           type="button"
           aria-pressed={showPlan}
           onClick={onTogglePlan}
-          className={`px-3 py-1 text-sm rounded focus:outline-none ${showPlan ? 'tp-btn-accent' : 'tp-btn border tp-border tp-muted'}`}
+          className={`px-3 py-1 text-sm rounded focus:outline-none ${showPlan ? 'tp-btn-accent' : 'tp-card border tp-border tp-text'}`}
         >
           {texts.projectHeader.plan}
         </button>
@@ -29,7 +29,7 @@ export default function PlanLoggedControls({ showPlan = true, showLogged = true,
           type="button"
           aria-pressed={showLogged}
           onClick={onToggleLogged}
-          className={`px-3 py-1 text-sm rounded focus:outline-none ${showLogged ? 'tp-btn-accent' : 'tp-btn border tp-border tp-muted'}`}
+          className={`px-3 py-1 text-sm rounded focus:outline-none ${showLogged ? 'tp-btn-accent' : 'tp-card border tp-border tp-text'}`}
         >
           {texts.projectHeader.logged}
         </button>
@@ -39,7 +39,7 @@ export default function PlanLoggedControls({ showPlan = true, showLogged = true,
             type="button"
             aria-pressed={editMode}
             onClick={onToggleEdit}
-            className={`px-3 py-1 text-sm rounded focus:outline-none ${editMode ? 'tp-btn-accent' : 'tp-btn border tp-border tp-muted'}`}
+            className={`px-3 py-1 text-sm rounded focus:outline-none ${editMode ? 'tp-btn-accent-alt' : 'tp-card border tp-border tp-text'}`}
           >
             {texts.projectHeader.edit}
           </button>
