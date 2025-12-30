@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom'
 import useTexts from '../hooks/useTexts'
 import PlanLoggedControls from '../components/shared/PlanLoggedControls'
+import CapacityLegend from '../components/shared/CapacityLegend'
 import MonthPager from '../components/shared/MonthPager'
 import { fetchProjects, fetchUsers, fetchMilestones, fetchPlannedCapacities, fetchLoggedCapacities } from '../api'
 import type { Project, ProjectMilestone, User } from '../types'
@@ -220,6 +221,21 @@ export default function MonthlyOverviewPage() {
 
     Object.keys(userLoggedInProjects).forEach(k => userLoggedTotal[Number(k)] = userLoggedInProjects[Number(k)])
 
+    const activeProjectGroups = useMemo(() => {
+        const grouped = Object.values(rows.reduce((acc, r) => {
+            if (!acc[r.project.id]) acc[r.project.id] = { project: r.project, rows: [] as typeof rows }
+            acc[r.project.id].rows.push(r)
+            return acc
+        }, {} as Record<number, { project: Project; rows: typeof rows }>))
+
+        return grouped.filter(group => group.rows.some(rr => {
+            const ms = rr.milestone
+            const started = ms.startYear < y || (ms.startYear === y && ms.startMonth <= m)
+            const notEnded = (ms.endYear === undefined) || (ms.endYear > y) || (ms.endYear === y && (ms.endMonth ?? ms.startMonth) >= m)
+            return started && notEnded
+        }))
+    }, [rows, y, m])
+
     if (loading) return <div>{texts.general.loading}</div>
     if (error) return <div>{texts.general.errorPrefix} {String(error)}</div>
 
@@ -257,26 +273,11 @@ export default function MonthlyOverviewPage() {
                 </div>
             </div>
 
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-6 text-sm tp-muted">
-                    <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full role-pm" /> {texts.capacityMatrix.roles.pm}</div>
-                    <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full role-creative" /> {texts.capacityMatrix.roles.creative}</div>
-                    <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full role-inactive" /> {texts.capacityMatrix.roles.inactive}</div>
-                </div>
 
-                <div className="flex items-center gap-6 text-sm tp-muted">
-                    <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full status-logged" /> <span>Zalogováno</span></div>
-                    <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full status-none" /> <span>Bez logů</span></div>
-                    <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full status-over" /> <span>Překročeno (logy &gt; plán)</span></div>
-                </div>
-            </div>
+            <CapacityLegend inline />
 
             <div id="projects" className="space-y-6">
-                {Object.values(rows.reduce((acc, r) => {
-                    if (!acc[r.project.id]) acc[r.project.id] = { project: r.project, rows: [] as typeof rows }
-                    acc[r.project.id].rows.push(r)
-                    return acc
-                }, {} as Record<number, { project: Project; rows: typeof rows }>)).map(group => {
+                {activeProjectGroups.map(group => {
                     const projRows = group.rows
                     const projectIncome = projRows.reduce((s, it) => s + (it.milestone.incomeAmount || 0), 0)
                     const projectPredictedCost = projRows.reduce((s, it) => s + (it.predictedCost || 0), 0)
@@ -300,6 +301,37 @@ export default function MonthlyOverviewPage() {
                         })
                         return [...pms, ...others, ...creatives]
                     })()
+
+                    // compute per-project totals (used in the totals row below)
+                    const totalsPlannedByUser: Record<number, number> = {}
+                    const totalsLoggedByUser: Record<number, number> = {}
+                    participants.forEach(p => { totalsPlannedByUser[p.id] = 0; totalsLoggedByUser[p.id] = 0 })
+                    const incomeTotal = projRows.reduce((s, it) => s + (it.incomeForMonth || 0), 0)
+                    const valueTotal = projRows.reduce((s, it) => s + (it.valueForMonth || 0), 0)
+                    const planCzkTotal = projRows.reduce((s, it) => {
+                        const rowPlan = Object.entries(it.plannedByUser).reduce((s2, [uidStr, hrs]) => {
+                            const user = users.find(u => u.id === Number(uidStr))
+                            return s2 + (hrs || 0) * (user?.costPerHour || 0)
+                        }, 0)
+                        return s + rowPlan
+                    }, 0)
+                    const loggedCostTotal = projRows.reduce((s, it) => {
+                        const rowLogged = Object.entries(it.loggedByUser).reduce((s2, [uidStr, hrs]) => {
+                            const user = users.find(u => u.id === Number(uidStr))
+                            return s2 + (hrs || 0) * (user?.costPerHour || 0)
+                        }, 0)
+                        return s + rowLogged
+                    }, 0)
+                    const predictedCostTotal = projRows.reduce((s, it) => s + (it.predictedCost || 0), 0)
+                    const predictedProfitTotal = projRows.reduce((s, it) => s + (it.predictedProfit || 0), 0)
+
+                    // accumulate participant-level hours
+                    projRows.forEach(rr => {
+                        participants.forEach(p => {
+                            totalsPlannedByUser[p.id] = (totalsPlannedByUser[p.id] || 0) + (rr.plannedByUser[p.id] || 0)
+                            totalsLoggedByUser[p.id] = (totalsLoggedByUser[p.id] || 0) + (rr.loggedByUser[p.id] || 0)
+                        })
+                    })
 
                     return (
                         <div id={`proj-${group.project.id}`} key={`proj-${group.project.id}`} className="border tp-border rounded-xl tp-muted-bg">
@@ -334,7 +366,7 @@ export default function MonthlyOverviewPage() {
                                     <colgroup>
                                         <col style={{ width: '16rem' }} />
                                         {participants.map(p => (
-                                            <col key={`col-${group.project.id}-${p.id}`} style={{ width: '6rem' }} />
+                                            <col key={`col-${group.project.id}-${p.id}`} style={{ width: '5rem' }} />
                                         ))}
                                         <col style={{ width: '9rem' }} />
                                         <col style={{ width: '10rem' }} />
@@ -422,6 +454,25 @@ export default function MonthlyOverviewPage() {
                                                 </tr>
                                             )
                                         })}
+                                            {/* totals row for this project (only when more than 1 milestone shown) */}
+                                            {projRows.length > 1 ? (
+                                                <tr className="border-t tp-border tp-muted-bg font-semibold">
+                                                    <td className="px-4 py-3">Celkem</td>
+                                                    {participants.map(p => (
+                                                        <td key={`tot-${group.project.id}-${p.id}`} className="text-center">
+                                                            <div>
+                                                                {showPlan ? String(totalsPlannedByUser[p.id] || 0) : ''}{(showPlan && showLogged) ? ' / ' : ''}{showLogged ? String(totalsLoggedByUser[p.id] || 0) : ''}
+                                                            </div>
+                                                        </td>
+                                                    ))}
+                                                    <td className="text-right">{incomeTotal ? fmtNumber(incomeTotal) : '—'}</td>
+                                                    <td className="text-right">{valueTotal ? fmtNumber(valueTotal) : '—'}</td>
+                                                    <td className="text-right">{planCzkTotal ? fmtNumber(planCzkTotal) : '—'}</td>
+                                                    <td className="text-right">{loggedCostTotal ? fmtNumber(loggedCostTotal) : '—'}</td>
+                                                    <td className="text-right pr-6">{predictedCostTotal ? fmtNumber(predictedCostTotal) : '—'}</td>
+                                                    <td className={`text-right ${predictedProfitTotal < 0 ? 'tp-danger' : 'tp-positive'} pr-6`}>{predictedProfitTotal ? fmtNumber(predictedProfitTotal) : '—'}</td>
+                                                </tr>
+                                            ) : null}
                                     </tbody>
                                 </table>
                             </div>

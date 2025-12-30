@@ -1,8 +1,3 @@
-// Minimal API client wrapper using fetch.
-// Tento soubor obsahuje MOCK dat pro vývoj UI.
-// Veškeré business výpočty (zisk, predikce, hotovo, hodnota)
-// MUSÍ být řešeny na backendu.
-
 import type {
   Project,
   ProjectMilestone,
@@ -12,10 +7,6 @@ import type {
 } from "./types";
 
 const sleep = (ms = 250) => new Promise((res) => setTimeout(res, ms));
-
-/* ============================================================
-   UŽIVATELÉ
-============================================================ */
 
 const mockUsers: User[] = [
   {
@@ -75,10 +66,6 @@ const mockUsers: User[] = [
   },
 ];
 
-/* ============================================================
-   PROJEKTY
-============================================================ */
-
 const mockProjects: Project[] = [
   { id: 1, name: "Redesign firemního webu", manager: mockUsers[0] },
   { id: 2, name: "Mobilní aplikace pro klienty", manager: mockUsers[1] },
@@ -86,9 +73,12 @@ const mockProjects: Project[] = [
   { id: 4, name: "Interní dashboard managementu", manager: mockUsers[1] },
 ];
 
-/* ============================================================
-   MILNÍKY
-============================================================ */
+const mockProjectUsers: Record<number, number[]> = {
+  1: [1, 3, 4, 5],
+  2: [2, 3, 6],
+  3: [1, 4],
+  4: [2, 5],
+};
 
 const mockMilestones: ProjectMilestone[] = [
   {
@@ -184,10 +174,6 @@ const mockMilestones: ProjectMilestone[] = [
   },
 ];
 
-/* ============================================================
-   PLÁNOVANÉ KAPACITY
-============================================================ */
-
 const mockPlannedCapacities: PlannedCapacity[] = [
   { userId: 1, milestoneId: 101, month: 10, year: 2025, plannedHours: 15 },
   { userId: 3, milestoneId: 101, month: 10, year: 2025, plannedHours: 20 },
@@ -227,8 +213,12 @@ const mockLoggedCapacities: LoggedCapacity[] = [
    API FUNKCE
 ============================================================ */
 
-export async function fetchUsers(): Promise<User[]> {
+export async function fetchUsers(projectId?: number): Promise<User[]> {
   await sleep();
+  if (typeof projectId === 'number') {
+    const ids = mockProjectUsers[projectId] || []
+    return mockUsers.filter(u => ids.includes(u.id))
+  }
   return [...mockUsers];
 }
 
@@ -261,6 +251,11 @@ export async function fetchPlannedCapacities(
   return mockPlannedCapacities.filter((p) =>
     milestoneIds.includes(p.milestoneId)
   );
+}
+
+export async function updateProjectUsers(projectId: number, userIds: number[]): Promise<void> {
+  await sleep(200);
+  mockProjectUsers[projectId] = [...userIds];
 }
 
 export async function fetchLoggedCapacities(
@@ -344,6 +339,27 @@ export async function addMilestoneMonth(milestoneId: number): Promise<void> {
   });
 }
 
+/* ============================================================
+   ODSTRANĚNÍ MĚSÍCE MILNÍKU
+============================================================ */
+export async function removeMilestoneMonth(milestoneId: number, month: number, year: number): Promise<void> {
+  await sleep(150);
+  // remove planned capacities for that milestone/month/year
+  for (let i = mockPlannedCapacities.length - 1; i >= 0; i--) {
+    const p = mockPlannedCapacities[i]
+    if (p.milestoneId === milestoneId && p.month === month && p.year === year) {
+      mockPlannedCapacities.splice(i, 1)
+    }
+  }
+  // remove logged capacities for that milestone/month/year
+  for (let i = mockLoggedCapacities.length - 1; i >= 0; i--) {
+    const l = mockLoggedCapacities[i]
+    if (l.milestoneId === milestoneId && l.month === month && l.year === year) {
+      mockLoggedCapacities.splice(i, 1)
+    }
+  }
+}
+
 export default {
   fetchUsers,
   fetchProjects,
@@ -354,4 +370,6 @@ export default {
   savePlannedCapacities,
   updateMilestone,
   addMilestoneMonth,
+  removeMilestoneMonth,
+  updateProjectUsers,
 };

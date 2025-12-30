@@ -69,7 +69,7 @@
 
 /* simple hover helpers using current color tokens */
 .hover-accent:hover { background-color: var(--tp-accent-600); color: #fff; }
-.hover-muted:hover { background-color: var(--tp-muted); color: var(--tp-text); }
+.hover-muted:hover { background-color: var(--tp-muted-bg); color: var(--tp-text); }
 
 /* Ensure these utilities don't conflict with Tailwind — kept small and explicit */
 

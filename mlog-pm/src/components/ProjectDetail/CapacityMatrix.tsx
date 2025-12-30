@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState, useImperativeHandle, forwardRef, useCallback } from 'react'
 import type { ProjectMilestone, PlannedCapacity, LoggedCapacity, User } from '../../types'
 import { savePlannedCapacities } from '../../api'
-import useTexts from '../../hooks/useTexts'
 import { isActiveUser } from '../../hooks/useRoles'
 import MilestoneHeader from './MilestoneHeader'
 import MilestoneMonthRow from './MilestoneMonthRow'
 import UserHeaderCell from './UserHeaderCell'
 import MonthCapacityModal from './MonthCapacityModal'
-
+    function fmtNumber(n: number) { return n === 0 ? '—' : n.toLocaleString('cs-CZ') }
 interface Props {
     milestones: ProjectMilestone[]
     planned: PlannedCapacity[]
@@ -124,7 +123,7 @@ const CapacityMatrix = forwardRef<MatrixHandle, AllProps>(function CapacityMatri
         setEditMonthOpen(true)
     }
 
-    const texts = useTexts()
+    
 
     return (
         <div className="rounded-md tp-text">
@@ -145,7 +144,7 @@ const CapacityMatrix = forwardRef<MatrixHandle, AllProps>(function CapacityMatri
                                 <colgroup>
                                     <col style={{ width: '6rem' }} />
                                     {visibleUsers.map(u => (
-                                        <col key={`col-user-${m.id}-${u.id}`} style={{ width: '6rem' }} />
+                                        <col key={`col-user-${m.id}-${u.id}`} style={{ width: '5rem' }} />
                                     ))}
                                     <col style={{ width: '6rem' }} />
                                     <col style={{ width: '6rem' }} />
@@ -153,22 +152,54 @@ const CapacityMatrix = forwardRef<MatrixHandle, AllProps>(function CapacityMatri
                                     <col style={{ width: '8rem' }} />
                                     <col style={{ width: '8rem' }} />
                                     <col style={{ width: '6rem' }} />
+                                    <col style={{ width: '6rem' }} />
                                 </colgroup>
                                 <tbody>
-                                    <MilestoneHeader m={m} onEditMilestone={onEditMilestone} onAddMonth={onAddMonth} />
+                                    <MilestoneHeader m={m} onEditMilestone={onEditMilestone} onAddMonth={onAddMonth} monthRows={monthRows} />
 
                                     
 
                                     <tr className="text-xs tp-muted border-b tp-border">
-                                        <td className="px-4 py-2 w-36">{texts.capacityMatrix.headers.month}</td>
+                                        <td className="px-4 py-2 w-36">Měsíc</td>
                                         {visibleUsers.map(u => (
                                             <td key={`hdr-${m.id}-${u.id}`} className="px-4 py-2 text-center"><UserHeaderCell user={u} /></td>
                                         ))}
-                                        <td className="px-4 py-2 text-right">{texts.capacityMatrix.headers.planned}</td>
-                                        <td className="px-4 py-2 text-right">{texts.capacityMatrix.headers.value}</td>
-                                        <td className="px-4 py-2 text-right">{texts.capacityMatrix.headers.logged}</td>
-                                        <td className="px-4 py-2 text-right">{texts.capacityMatrix.headers.predictedCost}</td>
-                                        <td className="px-4 py-2 text-right">{texts.capacityMatrix.headers.predictedProfit}</td>
+                                        <td className="px-3 py-2 text-right">
+                                            <div className="flex flex-col items-end">
+                                                <span>Příjem</span>
+                                                <span className="text-xs tp-muted">(Kč)</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-3 py-2 text-right">
+                                            <div className="flex flex-col items-end">
+                                                <span>Hodnota</span>
+                                                <span className="text-xs tp-muted">(Kč)</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-3 py-2 text-right">
+                                            <div className="flex flex-col items-end">
+                                                <span>Plán</span>
+                                                <span className="text-xs tp-muted">(Kč)</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-3 py-2 text-right">
+                                            <div className="flex flex-col items-end">
+                                                <span>Čerp.</span>
+                                                <span className="text-xs tp-muted">(Kč)</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-3 py-2 text-right">
+                                            <div className="flex flex-col items-end">
+                                                <span>Pred. náklad</span>
+                                                <span className="text-xs tp-muted">(Kč)</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-3 py-2 text-right">
+                                            <div className="flex flex-col items-end">
+                                                <span>Pred. zisk</span>
+                                                <span className="text-xs tp-muted">(Kč)</span>
+                                            </div>
+                                        </td>
                                         <td></td>
                                     </tr>
 
@@ -198,13 +229,21 @@ const CapacityMatrix = forwardRef<MatrixHandle, AllProps>(function CapacityMatri
                                             return { planned: userPlanned, logged: userLogged }
                                         })
 
-                                        const totalPlanned = userTotals.reduce((s, u) => s + u.planned, 0)
-                                        const totalLogged = userTotals.reduce((s, u) => s + u.logged, 0)
-                                        const totalPlannedCost = visibleUsers.reduce((s, u) => {
+                                        
+                                        const planCzkTotal = visibleUsers.reduce((s, u) => {
                                             const userPlanned = planned.filter(p => p.milestoneId === m.id && p.userId === u.id).reduce((ss, it) => ss + (it.plannedHours || 0), 0)
                                             return s + userPlanned * (u.costPerHour || 0)
                                         }, 0)
-                                        const totalPredictedProfit = Math.round((m.incomeAmount || 0) - totalPlannedCost)
+                                        const loggedCostTotal = visibleUsers.reduce((s, u) => {
+                                            const userLogged = logged.filter(l => l.milestoneId === m.id && l.userId === u.id).reduce((ss, it) => ss + (it.loggedHours || 0), 0)
+                                            return s + userLogged * (u.costPerHour || 0)
+                                        }, 0)
+                                        const predictedCostTotal = Math.round(planCzkTotal)
+                                        const predictedProfitTotal = Math.round(((() => {
+                                            // income is recognized only in the milestone end month
+                                            const incomeSum = monthRows.reduce((s, row) => s + ((m.endMonth === row.month && m.endYear === row.year) ? Math.round(m.incomeAmount || 0) : 0), 0)
+                                            return incomeSum
+                                        })()) - predictedCostTotal)
                                         const totalValue = (() => {
                                             const totalPlannedForMilestone = planned.filter(p => p.milestoneId === m.id).reduce((s, it) => s + (it.plannedHours || 0), 0)
                                             if (totalPlannedForMilestone === 0) return 0
@@ -222,17 +261,21 @@ const CapacityMatrix = forwardRef<MatrixHandle, AllProps>(function CapacityMatri
                                             return sumsByMonth.reduce((s, v) => s + v, 0)
                                         })()
 
+                                        // income total for this milestone (should be either income or 0)
+                                        const incomeTotal = monthRows.reduce((s, row) => s + ((m.endMonth === row.month && m.endYear === row.year) ? Math.round(m.incomeAmount || 0) : 0), 0)
+
                                         return (
                                             <tr className="tp-muted-bg border-t-2 tp-border font-semibold">
                                                 <td className="px-4 py-3">Součet</td>
                                                 {userTotals.map((u, idx) => (
                                                     <td key={idx} className="text-center">{u.planned}</td>
                                                 ))}
-                                                <td className="px-4 py-3 text-right">{totalPlanned}</td>
-                                                <td className="px-4 py-3 text-right tp-text">{totalValue ? totalValue.toLocaleString('cs-CZ') + '\u00A0Kč' : '—'}</td>
-                                                <td className="px-4 py-3 text-right">{totalLogged}</td>
-                                                <td className="px-4 py-3 text-right">{totalPlannedCost.toLocaleString('cs-CZ') + '\u00A0Kč'}</td>
-                                                <td className="px-4 py-3 text-right">{totalPredictedProfit.toLocaleString('cs-CZ') + '\u00A0Kč'}</td>
+                                                <td className="text-right px-4 py-3">{incomeTotal ? fmtNumber(incomeTotal) : '—'}</td>
+                                                <td className="px-4 py-3 text-right tp-text">{totalValue ? fmtNumber(totalValue) : '—'}</td>
+                                                <td className="px-4 py-3 text-right">{planCzkTotal ? fmtNumber(Math.round(planCzkTotal)) : '—'}</td>
+                                                <td className="px-4 py-3 text-right">{loggedCostTotal ? fmtNumber(Math.round(loggedCostTotal)) : '—'}</td>
+                                                <td className="px-4 py-3 text-right">{predictedCostTotal ? fmtNumber(predictedCostTotal) : '—'}</td>
+                                                <td className={`px-4 py-3 text-right ${predictedProfitTotal < 0 ? 'tp-danger' : 'tp-positive'}`}>{predictedProfitTotal ? fmtNumber(predictedProfitTotal) : '—'}</td>
                                                 <td className="px-4 py-3"></td>
                                             </tr>
                                         )
@@ -243,7 +286,6 @@ const CapacityMatrix = forwardRef<MatrixHandle, AllProps>(function CapacityMatri
                     )
                 })}
 
-                {/* Month capacity modal (single instance) */}
                 <MonthCapacityModal
                     open={editMonthOpen}
                     milestone={editingMilestone}

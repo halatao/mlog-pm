@@ -5,9 +5,10 @@ interface Props {
   m: ProjectMilestone
   onEditMilestone?: (m: ProjectMilestone) => void
   onAddMonth?: (m: ProjectMilestone) => void
+  monthRows?: { month: number; year: number }[]
 }
 
-export default function MilestoneHeader({ m, onEditMilestone, onAddMonth }: Props) {
+export default function MilestoneHeader({ m, onEditMilestone, onAddMonth, monthRows }: Props) {
   const texts = useTexts()
   const t = texts.capacityMatrix.milestoneHeader
 
@@ -57,7 +58,23 @@ export default function MilestoneHeader({ m, onEditMilestone, onAddMonth }: Prop
                   type="button"
                       className="px-2 py-1 text-xs border rounded hover-accent tp-text"
                   title={t.addMonthButton}
-                  onClick={(e) => { e.stopPropagation(); onAddMonth?.(m) }}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    // determine next month after the last displayed month
+                    const last = (monthRows && monthRows.length) ? monthRows[monthRows.length - 1] : { month: m.startMonth, year: m.startYear }
+                    let nextMonth = last.month + 1
+                    let nextYear = last.year
+                    if (nextMonth > 12) { nextMonth = 1; nextYear += 1 }
+                    // if milestone has explicit end, prevent adding beyond it
+                    if (m.endYear && m.endMonth) {
+                      if (nextYear > m.endYear || (nextYear === m.endYear && nextMonth > m.endMonth)) {
+                        // show a simple notification
+                        alert('Nelze přidat měsíc: překračuje datum ukončení milníku.')
+                        return
+                      }
+                    }
+                    onAddMonth?.(m)
+                  }}
                 >
                   {t.addMonthButton}
                 </button>

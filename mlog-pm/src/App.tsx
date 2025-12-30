@@ -150,7 +150,7 @@ export default function App() {
           </div>
         </div>
       </header>
-      <main className="max-w-6xl mx-auto p-6">
+      <main className="max-w-7xl mx-auto p-6">
         <Routes>
           <Route path="/" element={<HomePreview />} />
           <Route path="/projects/:projectId" element={<ProjectDetailPage />} />

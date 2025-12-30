@@ -18,8 +18,8 @@ interface Props {
 
 export default function MilestoneMonthRow({ m, row, visibleUsers, planned, logged, edits, keyFor, onChange, showPlan = true, showLogged = true, editMode = false, onEditMonth }: Props) {
   let sumPlanned = 0
-  let sumLogged = 0
   let sumPlannedCost = 0
+  let sumLoggedCost = 0
 
   visibleUsers.forEach(u => {
     const plannedEntry = planned.find(p => p.userId === u.id && p.milestoneId === m.id && p.month === row.month && p.year === row.year)
@@ -29,19 +29,17 @@ export default function MilestoneMonthRow({ m, row, visibleUsers, planned, logge
     const displayPlanned = edited !== undefined ? edited : (plannedEntry ? plannedEntry.plannedHours : 0)
     const displayLogged = loggedEntry ? loggedEntry.loggedHours : 0
     sumPlanned += displayPlanned
-    sumLogged += displayLogged
     sumPlannedCost += displayPlanned * (u.costPerHour || 0)
+    sumLoggedCost += displayLogged * (u.costPerHour || 0)
   })
 
-  function fmtHours(n: number) {
-    return n === 0 ? '—' : String(n)
-  }
   function fmtMoney(n: number) {
-    return n === 0 ? '—' : n.toLocaleString('cs-CZ') + '\u00A0Kč'
+    return n === 0 ? '—' : n.toLocaleString('cs-CZ')
   }
 
+  const incomeForMonth = (m.endMonth === row.month && m.endYear === row.year) ? Math.round(m.incomeAmount || 0) : 0
   const predictedCost = Math.round(sumPlannedCost)
-  const predictedProfit = Math.round((m.incomeAmount || 0) - predictedCost)
+  const predictedProfit = Math.round(incomeForMonth - predictedCost)
 
   const totalPlannedForMilestone = planned.filter(p => p.milestoneId === m.id).reduce((s, it) => s + (it.plannedHours || 0), 0)
   const monthValue = totalPlannedForMilestone > 0 ? Math.round(((m.incomeAmount || 0) * (sumPlanned / totalPlannedForMilestone))) : 0
@@ -73,10 +71,11 @@ export default function MilestoneMonthRow({ m, row, visibleUsers, planned, logge
         )
       })}
 
-      <td className="px-4 py-3 text-right">{fmtHours(sumPlanned)}</td>
+      <td className="px-4 py-3 text-right">{fmtMoney(incomeForMonth)}</td>
       <td className="px-4 py-3 text-right font-semibold tp-text">{fmtMoney(monthValue)}</td>
-      <td className="px-4 py-3 text-right">{fmtHours(sumLogged)}</td>
       <td className="px-4 py-3 text-right">{fmtMoney(sumPlannedCost)}</td>
+      <td className="px-4 py-3 text-right">{fmtMoney(sumLoggedCost)}</td>
+      <td className="px-4 py-3 text-right">{fmtMoney(predictedCost)}</td>
       <td className={`px-4 py-3 text-right ${predictedProfit < 0 ? 'tp-danger font-semibold' : ''}`}>{fmtMoney(predictedProfit)}</td>
       <td className="px-4 py-3 text-center">
         <button
