@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { User } from '../../types'
 import { fetchUsers, updateProjectUsers } from '../../api'
+import useTexts from '../../hooks/useTexts'
 
 interface Props {
   open: boolean
@@ -14,6 +15,7 @@ export default function ProjectUsersModal({ open, projectId, users, onClose, onS
   const [assigned, setAssigned] = useState<Record<number, boolean>>({})
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
+  const texts = useTexts()
 
   useEffect(() => {
     if (!open) return
@@ -58,8 +60,8 @@ export default function ProjectUsersModal({ open, projectId, users, onClose, onS
       <div className="tp-backdrop" onClick={onClose} />
       <div style={{ zIndex: 100000 }} className="relative w-full max-w-2xl p-6 rounded-lg tp-card border tp-border tp-text">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold tp-text">Správa účastníků projektu</h3>
-          <button aria-label="Zavřít" onClick={onClose} className="p-2 rounded tp-btn-ghost hover-accent">
+          <h3 className="text-lg font-semibold tp-text">{texts.projectUsersModal?.title}</h3>
+          <button aria-label={texts.projectUsersModal?.close} onClick={onClose} className="p-2 rounded tp-btn-ghost hover-accent">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
             </svg>
@@ -67,7 +69,7 @@ export default function ProjectUsersModal({ open, projectId, users, onClose, onS
         </div>
 
         {loading ? (
-          <div className="tp-text">Načítání…</div>
+          <div className="tp-text">{texts.projectUsersModal?.loading}</div>
         ) : (
           <div className="space-y-2 max-h-72 overflow-y-auto">
             {users.map(u => (
@@ -77,7 +79,7 @@ export default function ProjectUsersModal({ open, projectId, users, onClose, onS
                   <span className="inline-flex items-center justify-center w-8 h-8 rounded-full role-inactive text-sm font-semibold">{u.shortName}</span>
                   <div>
                     <div className="font-medium tp-text">{`${u.firstName} ${u.lastName}`.trim() || u.shortName}</div>
-                    <div className="text-xs tp-muted">{u.isActivePM ? 'PM' : u.isActiveCreative ? 'Creative' : ''}</div>
+                    <div className="text-xs tp-muted">{u.isActivePM ? texts.capacityMatrix.roles.pm : u.isActiveCreative ? texts.capacityMatrix.roles.creative : ''}</div>
                   </div>
                 </div>
               </label>
@@ -86,8 +88,8 @@ export default function ProjectUsersModal({ open, projectId, users, onClose, onS
         )}
 
         <div className="mt-4 flex justify-end gap-2">
-          <button onClick={onClose} className="px-3 py-2 tp-muted-bg rounded border tp-border tp-text">Zrušit</button>
-          <button onClick={handleSave} disabled={saving} className="px-3 py-2 tp-btn-accent rounded">{saving ? 'Ukládám…' : 'Uložit'}</button>
+          <button onClick={onClose} className="px-3 py-2 tp-muted-bg rounded border tp-border tp-text">{texts.projectUsersModal?.cancel}</button>
+          <button onClick={handleSave} disabled={saving} className="px-3 py-2 tp-btn-accent rounded">{saving ? texts.projectUsersModal?.saving : texts.projectUsersModal?.save}</button>
         </div>
       </div>
     </div>

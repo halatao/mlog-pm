@@ -13,6 +13,8 @@ interface Props {
   disabled?: boolean
 }
 
+import useTexts from '../../hooks/useTexts'
+
 export default function CapacityCell({
   planned = 0,
   logged = 0,
@@ -21,6 +23,7 @@ export default function CapacityCell({
   onChange,
   disabled = false,
 }: Props) {
+  const texts = useTexts()
   const [editing, setEditing] = useState(false)
   const [local, setLocal] = useState(String(planned ?? ''))
 
@@ -70,7 +73,14 @@ export default function CapacityCell({
               <span className="tp-muted">-</span>
             )}
           </div>
-          <div className={`w-2 h-2 mt-1 rounded-full ${((logged || 0) > (planned || 0)) ? 'status-over' : (logged ? 'status-logged' : 'status-none')}`} title={logged ? `Zalogováno: ${logged}h` : 'Bez logů'} />
+          <div
+            className={`w-2 h-2 mt-1 rounded-full ${((logged || 0) > (planned || 0)) ? 'status-over' : (logged ? 'status-logged' : 'status-none')}`}
+            title={
+              logged
+                ? (texts.capacityMatrix?.loggedTooltip ? texts.capacityMatrix.loggedTooltip.replace('{hours}', String(logged)) : `Zalogováno: ${logged}h`)
+                : (texts.capacityMatrix?.noLogs || 'Bez logů')
+            }
+          />
         </div>
       )}
     </td>

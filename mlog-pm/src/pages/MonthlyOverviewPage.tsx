@@ -256,7 +256,7 @@ export default function MonthlyOverviewPage() {
             <div className="flex items-start justify-between">
                 <div className="space-y-2">
                     <div>
-                        <a href="#employee-capacity" className="px-3 py-1 tp-muted-bg hover-accent tp-text rounded text-sm">Přejít na kapacitu zaměstnanců</a>
+                        <a href="#employee-capacity" className="px-3 py-1 tp-muted-bg hover-accent tp-text rounded text-sm">{texts.capacityMatrix?.gotoEmployeeCapacity || 'Přejít na kapacitu zaměstnanců'}</a>
                     </div>
 
                     <div className="overflow-x-auto">
@@ -346,15 +346,15 @@ export default function MonthlyOverviewPage() {
 
                                     <div className="flex gap-8 text-sm">
                                         <div>
-                                            <div className="text-xs tp-muted">Celkový příjem</div>
+                                            <div className="text-xs tp-muted">{texts.kpis.totalIncome}</div>
                                             <div className="font-semibold tp-text">{projectIncome ? fmtMoney(projectIncome) : '—'}</div>
                                         </div>
                                         <div>
-                                            <div className="text-xs tp-muted">Celková predikce zisku</div>
+                                            <div className="text-xs tp-muted">{texts.kpis.predictedProfit}</div>
                                             <div className="font-semibold tp-positive">{projectPredictedProfit ? fmtMoney(projectPredictedProfit) : '—'}</div>
                                         </div>
                                         <div>
-                                            <div className="text-xs tp-muted">Celkový zisk / příjem</div>
+                                            <div className="text-xs tp-muted">{texts.kpis.totalIncome}</div>
                                             <div className="font-semibold tp-positive">{projectIncome ? `${projectProfitPct} %` : '—'}</div>
                                         </div>
                                     </div>
@@ -377,7 +377,7 @@ export default function MonthlyOverviewPage() {
                                     </colgroup>
                                     <tbody>
                                         <tr className="tp-muted-bg text-xs tp-muted border-b tp-border">
-                                            <th scope="col" className="px-4 py-2 text-left">Milník</th>
+                                            <th scope="col" className="px-4 py-2 text-left">{texts.capacityMatrix.headers.milestone}</th>
                                             {participants.map(p => (
                                                 <th key={`hdr-${group.project.id}-${p.id}`} scope="col" className="text-center font-semibold">
                                                     <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-xs font-semibold ${getRoleColorClass(getUserRole(p))}`} aria-label={getUserRole(p)}>
@@ -387,37 +387,37 @@ export default function MonthlyOverviewPage() {
                                             ))}
                                             <th scope="col" className='px-3 py-2 text-right'>
                                                 <div className="flex flex-col items-end">
-                                                    <span>Příjem</span>
+                                                    <span>{texts.capacityMatrix.milestoneHeader.incomeLabel}</span>
                                                     <span className="text-xs tp-muted">(Kč)</span>
                                                 </div>
                                             </th>
                                             <th scope="col" className='px-3 py-2 text-right'>
                                                 <div className="flex flex-col items-end">
-                                                    <span>Hodnota</span>
+                                                    <span>{texts.capacityMatrix.headers.value}</span>
                                                     <span className="text-xs tp-muted">(Kč)</span>
                                                 </div>
                                             </th>
                                             <th scope="col" className="px-3 py-2 text-right">
                                                 <div className="flex flex-col items-end">
-                                                    <span>Plán</span>
+                                                    <span>{texts.capacityMatrix.headers.planned}</span>
                                                     <span className="text-xs tp-muted">(Kč)</span>
                                                 </div>
                                             </th>
                                             <th scope="col" className="px-3 py-2 text-right">
                                                 <div className="flex flex-col items-end">
-                                                    <span>Čerp.</span>
+                                                    <span>{texts.capacityMatrix.headers.logged}</span>
                                                     <span className="text-xs tp-muted">(Kč)</span>
                                                 </div>
                                             </th>
                                             <th scope="col" className="px-3 py-2 pr-6 text-right">
                                                 <div className="flex flex-col items-end">
-                                                    <span>Pred. náklad</span>
+                                                    <span>{texts.capacityMatrix.headers.predictedCost}</span>
                                                     <span className="text-xs tp-muted">(Kč)</span>
                                                 </div>
                                             </th>
                                             <th scope="col" className="px-3 py-2 pr-6 text-right">
                                                 <div className="flex flex-col items-end">
-                                                    <span>Pred. zisk</span>
+                                                    <span>{texts.capacityMatrix.headers.predictedProfit}</span>
                                                     <span className="text-xs tp-muted">(Kč)</span>
                                                 </div>
                                             </th>
@@ -440,7 +440,7 @@ export default function MonthlyOverviewPage() {
                                                     {participants.map(p => (
                                                         <td key={`cell-${group.project.id}-${rr.milestone.id}-${p.id}`} className="text-center">
                                                             <div className="font-medium">{showPlan ? String(rr.plannedByUser[p.id] || 0) : ''}{(showPlan && showLogged) ? ' / ' : ''}{showLogged ? String(rr.loggedByUser[p.id] || 0) : ''}</div>
-                                                            <div className={`w-2 h-2 mx-auto mt-1 rounded-full ${((rr.loggedByUser[p.id] || 0) > (rr.plannedByUser[p.id] || 0)) ? 'status-over' : (rr.loggedByUser[p.id] ? 'status-logged' : 'status-none')}`} title={rr.loggedByUser[p.id] ? `Zalogováno: ${rr.loggedByUser[p.id]}h` : 'Bez logů'} />
+                                                            <div className={`w-2 h-2 mx-auto mt-1 rounded-full ${((rr.loggedByUser[p.id] || 0) > (rr.plannedByUser[p.id] || 0)) ? 'status-over' : (rr.loggedByUser[p.id] ? 'status-logged' : 'status-none')}`} title={rr.loggedByUser[p.id] ? texts.capacityMatrix.loggedTooltip.replace('{hours}', String(rr.loggedByUser[p.id])) : texts.capacityMatrix.noLogs} />
                                                         </td>
                                                     ))}
                                                     <td className="text-right">{rr.incomeForMonth ? fmtNumber(rr.incomeForMonth) : '—'}</td>
@@ -454,25 +454,25 @@ export default function MonthlyOverviewPage() {
                                                 </tr>
                                             )
                                         })}
-                                            {/* totals row for this project (only when more than 1 milestone shown) */}
-                                            {projRows.length > 1 ? (
-                                                <tr className="border-t tp-border tp-muted-bg font-semibold">
-                                                    <td className="px-4 py-3">Celkem</td>
-                                                    {participants.map(p => (
-                                                        <td key={`tot-${group.project.id}-${p.id}`} className="text-center">
-                                                            <div>
-                                                                {showPlan ? String(totalsPlannedByUser[p.id] || 0) : ''}{(showPlan && showLogged) ? ' / ' : ''}{showLogged ? String(totalsLoggedByUser[p.id] || 0) : ''}
-                                                            </div>
-                                                        </td>
-                                                    ))}
-                                                    <td className="text-right">{incomeTotal ? fmtNumber(incomeTotal) : '—'}</td>
-                                                    <td className="text-right">{valueTotal ? fmtNumber(valueTotal) : '—'}</td>
-                                                    <td className="text-right">{planCzkTotal ? fmtNumber(planCzkTotal) : '—'}</td>
-                                                    <td className="text-right">{loggedCostTotal ? fmtNumber(loggedCostTotal) : '—'}</td>
-                                                    <td className="text-right pr-6">{predictedCostTotal ? fmtNumber(predictedCostTotal) : '—'}</td>
-                                                    <td className={`text-right ${predictedProfitTotal < 0 ? 'tp-danger' : 'tp-positive'} pr-6`}>{predictedProfitTotal ? fmtNumber(predictedProfitTotal) : '—'}</td>
-                                                </tr>
-                                            ) : null}
+                                        {/* totals row for this project (only when more than 1 milestone shown) */}
+                                        {projRows.length > 1 ? (
+                                            <tr className="border-t tp-border tp-muted-bg font-semibold">
+                                                <td className="px-4 py-3">Celkem</td>
+                                                {participants.map(p => (
+                                                    <td key={`tot-${group.project.id}-${p.id}`} className="text-center">
+                                                        <div>
+                                                            {showPlan ? String(totalsPlannedByUser[p.id] || 0) : ''}{(showPlan && showLogged) ? ' / ' : ''}{showLogged ? String(totalsLoggedByUser[p.id] || 0) : ''}
+                                                        </div>
+                                                    </td>
+                                                ))}
+                                                <td className="text-right">{incomeTotal ? fmtNumber(incomeTotal) : '—'}</td>
+                                                <td className="text-right">{valueTotal ? fmtNumber(valueTotal) : '—'}</td>
+                                                <td className="text-right">{planCzkTotal ? fmtNumber(planCzkTotal) : '—'}</td>
+                                                <td className="text-right">{loggedCostTotal ? fmtNumber(loggedCostTotal) : '—'}</td>
+                                                <td className="text-right pr-6">{predictedCostTotal ? fmtNumber(predictedCostTotal) : '—'}</td>
+                                                <td className={`text-right ${predictedProfitTotal < 0 ? 'tp-danger' : 'tp-positive'} pr-6`}>{predictedProfitTotal ? fmtNumber(predictedProfitTotal) : '—'}</td>
+                                            </tr>
+                                        ) : null}
                                     </tbody>
                                 </table>
                             </div>

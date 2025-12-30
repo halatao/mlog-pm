@@ -57,9 +57,9 @@ export default function App() {
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="font-semibold">{texts.general.nav.overview}</h3>
-                <p className="text-sm tp-muted">Rychlý náhled kapacit a vytížení</p>
+                <p className="text-sm tp-muted">{texts.general?.previewOverviewDesc}</p>
               </div>
-              <div className="text-xs tp-muted">Otevřít</div>
+              <div className="text-xs tp-muted">{texts.general?.openLabel}</div>
             </div>
 
             <div className="mt-3">
@@ -70,7 +70,7 @@ export default function App() {
                     <div key={i} className={`h-3 rounded ${i % 5 === 0 ? 'tp-accent-bg' : 'tp-muted-bg'}`} />
                   ))}
                 </div>
-                <div className="text-xs tp-muted mt-2">Plán: {loading ? '...' : `${totalPlanned} h`} · Čerpáno: {loading ? '...' : `${totalLogged} h`}</div>
+                <div className="text-xs tp-muted mt-2">Plán: {loading ? texts.general?.loadingShort : `${totalPlanned} h`} · Čerpáno: {loading ? texts.general?.loadingShort : `${totalLogged} h`}</div>
               </div>
             </div>
           </Link>
@@ -80,13 +80,13 @@ export default function App() {
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="font-semibold">{texts.general.nav.myProjects}</h3>
-                <p className="text-sm tp-muted">Projekty, kde jste PM nebo účastník</p>
+                <p className="text-sm tp-muted">{texts.general?.previewMyProjectsDesc}</p>
               </div>
-              <div className="text-xs tp-muted">Otevřít</div>
+              <div className="text-xs tp-muted">{texts.general?.openLabel}</div>
             </div>
 
-            <div className="mt-3 text-sm">
-              {loading && <div className="tp-muted">Načítám…</div>}
+              <div className="mt-3 text-sm">
+              {loading && <div className="tp-muted">{texts.general?.loadingShort}</div>}
               {!loading && previews[0] && (
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full tp-muted-bg flex items-center justify-center">{previews[0].project.name.split(' ').map(s=>s[0]).slice(0,2).join('')}</div>
@@ -96,7 +96,7 @@ export default function App() {
                   </div>
                 </div>
               )}
-              {!loading && previews.length <= 0 && <div className="tp-muted">Žádné projekty</div>}
+              {!loading && previews.length <= 0 && <div className="tp-muted">{texts.general?.noProjectsShort}</div>}
               <div className="mt-2 text-xs tp-muted">{loading ? '' : `+ ${Math.max(0, previews.length - 1)} dalších`}</div>
             </div>
           </Link>
@@ -106,9 +106,9 @@ export default function App() {
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="font-semibold">{texts.general.nav.project}</h3>
-                <p className="text-sm tp-muted">Přejít na detail projektu</p>
+                <p className="text-sm tp-muted">{texts.general?.previewProjectDesc}</p>
               </div>
-              <div className="text-xs tp-muted">Projekt</div>
+              <div className="text-xs tp-muted">{texts.general?.openLabel}</div>
             </div>
 
             <div className="mt-3 text-sm tp-muted">
@@ -118,7 +118,7 @@ export default function App() {
                   <div className="text-xs mt-1">pred. zisk: {fmtMoney(Math.round((previews[1].milestone?.incomeAmount || 0) - 0))} • {previews[1].milestone?.donePercent ?? 0} %</div>
                 </>
               ) : (
-                <div className="tp-muted">Načítám…</div>
+                <div className="tp-muted">{texts.general?.loadingShort}</div>
               )}
             </div>
           </Link>

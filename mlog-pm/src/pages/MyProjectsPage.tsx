@@ -63,14 +63,14 @@ export default function MyProjectsPage() {
 
             {/* PAGE HEADER */}
             <div>
-                <h1 className="text-3xl font-semibold tp-text">Přehled mých projektů</h1>
-                <p className="tp-muted">Projekty s aktivitou za posledních 30 dní</p>
+                <h1 className="text-3xl font-semibold tp-text">{texts.pages.myProjects.pageTitle}</h1>
+                <p className="tp-muted">{texts.pages.myProjects.description}</p>
             </div>
 
             {/* PM PROJECTS */}
             {pmProjects.length > 0 && (
                 <div className="space-y-4">
-                    <h2 className="text-xl font-semibold tp-text">Moje projekty (jako PM)</h2>
+                    <h2 className="text-xl font-semibold tp-text">{texts.pages.myProjects.headerPM}</h2>
 
                     <div className="border tp-border rounded-xl overflow-x-auto tp-muted-bg">
                         <table className="min-w-full border-collapse">
@@ -150,7 +150,7 @@ export default function MyProjectsPage() {
             {/* OTHER PROJECTS */}
             {otherProjects.length > 0 && (
                 <div className="space-y-4">
-                    <h2 className="text-xl font-semibold tp-text">Projekty s mou účastí</h2>
+                    <h2 className="text-xl font-semibold tp-text">{texts.pages.myProjects.headerParticipation}</h2>
 
                     <div className="border tp-border rounded-xl overflow-x-auto tp-muted-bg">
                         <table className="min-w-full border-collapse">
@@ -227,7 +227,7 @@ export default function MyProjectsPage() {
 
             {/* Fallback when both tables are empty */}
             {pmProjects.length === 0 && otherProjects.length === 0 && (
-                <div className="tp-muted text-center py-12">Žádné projekty k zobrazení.</div>
+                <div className="tp-muted text-center py-12">{texts.pages.myProjects.fallback}</div>
             )}
         </div>
     )

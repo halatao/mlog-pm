@@ -26,7 +26,7 @@ export default function ProjectHeader({ projectName, managerName, showPlan, show
                 <div className="ml-4 flex-shrink-0">
                     <div className="flex gap-4 items-center tp-text">
                         {onManageUsers ? (
-                            <button title="Správa účastníků" onClick={onManageUsers} className="p-2 rounded border tp-border tp-card hover-accent">
+                            <button title={texts.projectHeader.manageUsers} onClick={onManageUsers} className="p-2 rounded border tp-border tp-card hover-accent">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path d="M13 7a3 3 0 11-6 0 3 3 0 016 0z" />
                                     <path fillRule="evenodd" d="M5 13a4 4 0 018 0v1H5v-1zM15.293 14.293a1 1 0 011.414 0l1 1a1 1 0 010 1.414l-3 3a1 1 0 01-.707.293H12a1 1 0 01-1-1v-1.586a1 1 0 01.293-.707l3-3z" clipRule="evenodd" />
