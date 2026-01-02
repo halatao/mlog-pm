@@ -1,9 +1,12 @@
 import type { Dispatch, SetStateAction } from 'react'
-import { useMemo } from 'react'
-import type { Project, User } from '../../types'
+import { useMemo, useEffect, useState } from 'react'
+import type { Project, User, WorkLog } from '../../types'
 import { getUserRole, getRoleColorClass } from '../../hooks/useRoles'
+import { useModal } from '../../components/modals/ModalContext'
+import { fetchWorkLogsForProject } from '../../api'
 type UserExtras = { capacity?: number; monthlyCapacity?: number }
 import useTexts from '../../hooks/useTexts'
+import WorkLogsModal from '../modals/WorkLogsModal'
 
 type NumMap = Record<number, number>
 
@@ -12,8 +15,6 @@ interface Props {
   month: number
   year: number
   userAssigned: NumMap
-  userLoggedInProjects: NumMap
-  userLoggedTotal: NumMap
   projectsForFilter: Project[]
   rolesForFilter: string[]
   userProjectMap: Map<number, Set<number>>
@@ -42,8 +43,6 @@ export default function EmployeeCapacityTable({
   month,
   year,
   userAssigned,
-  userLoggedInProjects,
-  userLoggedTotal,
   projectsForFilter,
   rolesForFilter,
   userProjectMap,
@@ -67,6 +66,67 @@ export default function EmployeeCapacityTable({
   setEmpCellEditingCapacityUserId,
 }: Props) {
   const texts = useTexts()
+  const { showModal } = useModal()
+
+  const [worklogSums, setWorklogSums] = useState<{ byUserMonth: Record<number, number>; byUserTotal: Record<number, number> }>({ byUserMonth: {}, byUserTotal: {} })
+  const [worklogDetails, setWorklogDetails] = useState<Record<number, WorkLog[]>>({})
+
+  useEffect(() => {
+    let mounted = true
+    async function load() {
+      const projMap = new Map<number, Project>()
+      projectsForFilter.forEach(p => projMap.set(p.id, p))
+
+      const pidsAll = projectsForFilter.map(p => p.id)
+
+      const byUserProjMonth: Record<number, number> = {} // non-internal projects only
+      const byUserMonthTotal: Record<number, number> = {} // includes internal projects
+      const details: Record<number, WorkLog[]> = {}
+
+      for (const pid of pidsAll) {
+        const project = projMap.get(pid)
+        const isInternal = !!project?.isInternal
+        try {
+          const logs = await fetchWorkLogsForProject(pid)
+          logs.forEach((w: WorkLog) => {
+            const dt = new Date(w.date)
+            const m = dt.getMonth() + 1
+            const y = dt.getFullYear()
+            const hours = (w.seconds || 0) / 3600
+
+            if (m === month && y === year) {
+              byUserMonthTotal[w.userId] = (byUserMonthTotal[w.userId] || 0) + hours
+
+              if (!isInternal) {
+                byUserProjMonth[w.userId] = (byUserProjMonth[w.userId] || 0) + hours
+              }
+
+              details[w.userId] = details[w.userId] || []
+              details[w.userId].push(w)
+            }
+          })
+        } catch (err) {
+          void err
+        }
+      }
+      if (!mounted) return
+
+      const byUserMonth: Record<number, number> = {}
+      const byUserTotal: Record<number, number> = {}
+      const allUserIds = new Set<number>([...Object.keys(byUserMonthTotal).map(Number), ...Object.keys(byUserProjMonth).map(Number)])
+      allUserIds.forEach(uid => {
+        const pm = byUserProjMonth[uid] || 0
+        const total = byUserMonthTotal[uid] || 0
+        byUserMonth[uid] = Math.round((pm + Number.EPSILON) * 100) / 100
+        byUserTotal[uid] = Math.round((total + Number.EPSILON) * 100) / 100
+      })
+
+      setWorklogSums({ byUserMonth, byUserTotal })
+      setWorklogDetails(details)
+    }
+    load()
+    return () => { mounted = false }
+  }, [projectsForFilter, month, year])
 
   const filteredUsers = useMemo(() => {
     return users.filter(u => {
@@ -162,23 +222,23 @@ export default function EmployeeCapacityTable({
           </colgroup>
           <thead>
             <tr className="tp-muted text-xs border-b tp-border">
-              <th className="px-4 py-3 text-left">{texts.capacityMatrix?.headers.person || 'Osoba'}</th>
-              <th className="px-4 py-3 text-center">{texts.capacityMatrix?.headers.capacity || 'Kapacita'}</th>
-              <th className="px-4 py-3 text-center">{texts.capacityMatrix?.headers.assigned || 'Přiděleno'}</th>
-              <th className="px-4 py-3 text-center">{texts.capacityMatrix?.headers.remaining || 'Zbývá'}</th>
-              <th className="px-4 py-3 text-center">{texts.capacityMatrix?.headers.loggedProject || 'Zalog. projekty (výše)'}</th>
-              <th className="px-4 py-3 text-center">{texts.capacityMatrix?.headers.loggedTotal || 'Zalog. celkem'}</th>
+              <th className="px-4 py-3 text-left">{texts.capacityMatrix?.headers.person}</th>
+              <th className="px-4 py-3 text-center">{texts.capacityMatrix?.headers.capacity}</th>
+              <th className="px-4 py-3 text-center">{texts.capacityMatrix?.headers.assigned}</th>
+              <th className="px-4 py-3 text-center">{texts.capacityMatrix?.headers.remaining}</th>
+              <th className="px-4 py-3 text-center">{texts.capacityMatrix?.headers.loggedProject}</th>
+              <th className="px-4 py-3 text-center">{texts.capacityMatrix?.headers.loggedTotal}</th>
             </tr>
           </thead>
           <tbody>
             {filteredUsers.map(u => {
-              const extra = u as unknown as UserExtras
+              const extra = u as UserExtras
               const capacity = empSavedCapacity?.[u.id] ?? (empEditedCapacity?.[u.id] ?? (extra.capacity ?? extra.monthlyCapacity ?? 160))
               const role = getUserRole(u)
               const baseAssigned = userAssigned[u.id] || 0
               const assigned = baseAssigned
-              const loggedProj = userLoggedInProjects[u.id] || 0
-              const loggedTotal = userLoggedTotal[u.id] || 0
+              const loggedProj = worklogSums.byUserMonth[u.id] ?? 0
+              const loggedTotal = worklogSums.byUserTotal[u.id] ?? 0
               const remaining = capacity - assigned
               const remainingLabel = (remaining >= 0 ? `+${remaining}h` : `${remaining}h`)
               return (
@@ -212,7 +272,16 @@ export default function EmployeeCapacityTable({
                   <td className="px-4 py-3 text-center align-middle">{String(assigned) + 'h'}</td>
                   <td className={`px-4 py-3 text-center ${remaining >= 0 ? 'tp-positive' : 'tp-danger'} font-semibold`}>{remainingLabel}</td>
                   <td className="px-4 py-3 text-center">{String(loggedProj)}h</td>
-                  <td className="px-4 py-3 text-center">{String(loggedTotal)}h</td>
+                  <td className="px-4 py-3 text-center">
+                    <button
+                      className="w-full text-sm tp-text"
+                      onClick={async (e) => {
+                        e.stopPropagation(); e.preventDefault();
+                        const combined: WorkLog[] = worklogDetails[u.id] ? [...worklogDetails[u.id]] : []
+                        showModal(<WorkLogsModal workLogs={combined} users={users} />)
+                      }}
+                    >{String(loggedTotal)}h</button>
+                  </td>
                 </tr>
               )
             })}

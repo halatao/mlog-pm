@@ -141,9 +141,7 @@ export default function MonthlyOverviewPage() {
     function fmtNumber(n: number) { return n.toLocaleString('cs-CZ') }
 
     const userAssigned: Record<number, number> = {}
-    const userLoggedInProjects: Record<number, number> = {}
-    const userLoggedTotal: Record<number, number> = {}
-    users.forEach(u => { userAssigned[u.id] = 0; userLoggedInProjects[u.id] = 0; userLoggedTotal[u.id] = 0 })
+    users.forEach(u => { userAssigned[u.id] = 0 })
 
 
 
@@ -184,10 +182,7 @@ export default function MonthlyOverviewPage() {
 
     for (const r of rows) {
         for (const [uidStr, hrs] of Object.entries(r.plannedByUser)) userAssigned[Number(uidStr)] += hrs
-        for (const [uidStr, hrs] of Object.entries(r.loggedByUser)) userLoggedInProjects[Number(uidStr)] += hrs
     }
-
-    Object.keys(userLoggedInProjects).forEach(k => userLoggedTotal[Number(k)] = userLoggedInProjects[Number(k)])
 
     const activeProjectGroups = useMemo(() => {
         const grouped = Object.values(rows.reduce((acc, r) => {
@@ -311,8 +306,6 @@ export default function MonthlyOverviewPage() {
                 month={m}
                 year={y}
                 userAssigned={userAssigned}
-                userLoggedInProjects={userLoggedInProjects}
-                userLoggedTotal={userLoggedTotal}
                 projectsForFilter={projectsForFilter}
                 rolesForFilter={rolesForFilter}
                 userProjectMap={userProjectMap}

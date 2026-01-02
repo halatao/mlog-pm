@@ -5,7 +5,7 @@ import { isActiveUser } from '../../hooks/useRoles'
 import MilestoneHeader from './MilestoneHeader'
 import MilestoneMonthRow from './MilestoneMonthRow'
 import UserHeaderCell from './UserHeaderCell'
-import MonthCapacityModal from './MonthCapacityModal'
+import MonthCapacityModal from '../modals/MonthCapacityModal'
     function fmtNumber(n: number) { return n === 0 ? '—' : n.toLocaleString('cs-CZ') }
 interface Props {
     milestones: ProjectMilestone[]
@@ -28,6 +28,7 @@ type AllProps = Props & {
     onReload?: () => Promise<void>
     onEditMilestone?: (m: ProjectMilestone) => void
     onAddMonth?: (m: ProjectMilestone) => void
+    projectId?: number
 }
 
 const CapacityMatrix = forwardRef<MatrixHandle, AllProps>(function CapacityMatrix({

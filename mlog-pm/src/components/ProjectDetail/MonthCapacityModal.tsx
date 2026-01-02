@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { User, PlannedCapacity, ProjectMilestone, LoggedCapacity } from '../../types'
+import type { User, PlannedCapacity, ProjectMilestone, LoggedCapacity, ChangeHistoryEntry } from '../../types'
 import { savePlannedCapacities, removeMilestoneMonth } from '../../api'
 import useTexts from '../../hooks/useTexts'
-import type { ChangeHistoryEntry } from '../../models/changeHistory'
 
 interface Props {
     open: boolean

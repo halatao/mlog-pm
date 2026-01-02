@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import useTexts from '../../hooks/useTexts'
+import useMonths from '../../hooks/useMonths'
 import type { ProjectMilestone } from '../../types'
 
 interface Props {
@@ -17,6 +18,7 @@ export default function MilestoneEditModal({ milestone, open, onClose, onSave }:
     const [saving, setSaving] = useState(false)
 
     const texts = useTexts()
+    const months = useMonths()
 
     if (!open || !local) return null
 
@@ -57,18 +59,9 @@ export default function MilestoneEditModal({ milestone, open, onClose, onSave }:
                                 value={local.startMonth}
                                 onChange={e => setLocal({ ...local, startMonth: Number(e.target.value) })}
                             >
-                                <option value={1}>Leden</option>
-                                <option value={2}>Únor</option>
-                                <option value={3}>Březen</option>
-                                <option value={4}>Duben</option>
-                                <option value={5}>Květen</option>
-                                <option value={6}>Červen</option>
-                                <option value={7}>Červenec</option>
-                                <option value={8}>Srpen</option>
-                                <option value={9}>Září</option>
-                                <option value={10}>Říjen</option>
-                                <option value={11}>Listopad</option>
-                                <option value={12}>Prosinec</option>
+                                {months.months.map((m, idx) => (
+                                    <option value={idx + 1} key={idx}>{m.charAt(0).toUpperCase() + m.slice(1)}</option>
+                                ))}
                             </select>
 
                             <input
@@ -89,18 +82,9 @@ export default function MilestoneEditModal({ milestone, open, onClose, onSave }:
                                 value={local.endMonth ?? local.startMonth}
                                 onChange={e => setLocal({ ...local, endMonth: Number(e.target.value) })}
                             >
-                                <option value={1}>Leden</option>
-                                <option value={2}>Únor</option>
-                                <option value={3}>Březen</option>
-                                <option value={4}>Duben</option>
-                                <option value={5}>Květen</option>
-                                <option value={6}>Červen</option>
-                                <option value={7}>Červenec</option>
-                                <option value={8}>Srpen</option>
-                                <option value={9}>Září</option>
-                                <option value={10}>Říjen</option>
-                                <option value={11}>Listopad</option>
-                                <option value={12}>Prosinec</option>
+                                {months.months.map((m, idx) => (
+                                    <option value={idx + 1} key={idx}>{m.charAt(0).toUpperCase() + m.slice(1)}</option>
+                                ))}
                             </select>
 
                             <input

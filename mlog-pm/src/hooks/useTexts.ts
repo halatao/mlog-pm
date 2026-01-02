@@ -148,6 +148,12 @@ export default function useTexts(): Texts {
       },
       headers: {
         milestone: "Milník",
+        person: "Osoba",
+        capacity: "Kapacita",
+        assigned: "Přiděleno",
+        remaining: "Zbývá",
+        loggedProject: "Zalogováno (projekt)",
+        loggedTotal: "Zalogováno (celkem)",
         month: "Měsíc",
         planned: "Plán (h)",
         value: "Hodnota (Kč)",

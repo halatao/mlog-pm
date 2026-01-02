@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import { useEffect } from 'react'
+import { ModalProvider } from './components/modals/ModalContext'
 import ProjectDetailPage from './pages/ProjectDetailPage'
+import MilestoneDetailPage from './pages/MilestoneDetailPage'
 import MonthlyOverviewPage from './pages/MonthlyOverviewPage'
 import MyProjectsPage from './pages/MyProjectsPage'
 import useTexts from './hooks/useTexts'
@@ -137,6 +139,7 @@ export default function App() {
   }, [])
 
   return (
+    <ModalProvider>
     <BrowserRouter>
       <header className="tp-card tp-text p-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
@@ -154,10 +157,12 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePreview />} />
           <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
+          <Route path="/projects/:projectId/milestones/:milestoneId" element={<MilestoneDetailPage />} />
           <Route path="/overview/:year/:month" element={<MonthlyOverviewPage />} />
           <Route path="/users/:userId/projects" element={<MyProjectsPage />} />
         </Routes>
       </main>
     </BrowserRouter>
+    </ModalProvider>
   )
 }

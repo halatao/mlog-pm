@@ -1,0 +1,5326 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "MlogPmApi",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/LoggedCapacities": {
+      "get": {
+        "tags": [
+          "LoggedCapacities"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoggedCapacity"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoggedCapacity"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoggedCapacity"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "LoggedCapacities"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoggedCapacity"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoggedCapacity"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoggedCapacity"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoggedCapacity"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoggedCapacity"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoggedCapacity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/LoggedCapacities/{userId}/{milestoneId}/{month}/{year}": {
+      "get": {
+        "tags": [
+          "LoggedCapacities"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "milestoneId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "month",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoggedCapacity"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoggedCapacity"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoggedCapacity"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "LoggedCapacities"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "milestoneId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "month",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoggedCapacity"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoggedCapacity"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoggedCapacity"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "LoggedCapacities"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "milestoneId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "month",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/PlannedCapacities": {
+      "get": {
+        "tags": [
+          "PlannedCapacities"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlannedCapacity"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlannedCapacity"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlannedCapacity"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "PlannedCapacities"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedCapacity"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedCapacity"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedCapacity"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlannedCapacity"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlannedCapacity"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlannedCapacity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/PlannedCapacities/{userId}/{milestoneId}/{month}/{year}": {
+      "get": {
+        "tags": [
+          "PlannedCapacities"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "milestoneId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "month",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlannedCapacity"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlannedCapacity"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlannedCapacity"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "PlannedCapacities"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "milestoneId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "month",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedCapacity"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedCapacity"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedCapacity"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "PlannedCapacities"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "milestoneId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "month",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ProjectMilestones": {
+      "get": {
+        "tags": [
+          "ProjectMilestones"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectMilestone"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectMilestone"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectMilestone"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ProjectMilestones"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectMilestone"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectMilestone"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectMilestone"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectMilestone"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectMilestone"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectMilestone"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ProjectMilestones/{id}": {
+      "get": {
+        "tags": [
+          "ProjectMilestones"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectMilestone"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectMilestone"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectMilestone"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "ProjectMilestones"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectMilestone"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectMilestone"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectMilestone"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ProjectMilestones"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Projects": {
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Project"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Project"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Project"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Projects"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Project"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Project"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Project"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Projects/{id}": {
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Projects"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Project"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Project"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Project"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Projects"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ProjectWorkers": {
+      "get": {
+        "tags": [
+          "ProjectWorkers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectWorker"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectWorker"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectWorker"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ProjectWorkers"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectWorker"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectWorker"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectWorker"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectWorker"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectWorker"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectWorker"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ProjectWorkers/{projectId}/{userId}": {
+      "get": {
+        "tags": [
+          "ProjectWorkers"
+        ],
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectWorker"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectWorker"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectWorker"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "ProjectWorkers"
+        ],
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectWorker"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectWorker"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectWorker"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ProjectWorkers"
+        ],
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Requirements": {
+      "get": {
+        "tags": [
+          "Requirements"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Requirement"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Requirement"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Requirement"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Requirements"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Requirement"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Requirement"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Requirement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Requirement"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Requirement"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Requirement"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Requirements/{id}": {
+      "get": {
+        "tags": [
+          "Requirements"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Requirement"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Requirement"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Requirement"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Requirements"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Requirement"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Requirement"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Requirement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Requirements"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/SubRequirements": {
+      "get": {
+        "tags": [
+          "SubRequirements"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SubRequirement"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SubRequirement"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SubRequirement"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "SubRequirements"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubRequirement"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubRequirement"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubRequirement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubRequirement"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubRequirement"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubRequirement"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/SubRequirements/{id}": {
+      "get": {
+        "tags": [
+          "SubRequirements"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubRequirement"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubRequirement"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubRequirement"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "SubRequirements"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubRequirement"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubRequirement"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubRequirement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "SubRequirements"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/WorkLogs": {
+      "get": {
+        "tags": [
+          "WorkLogs"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorkLog"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorkLog"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorkLog"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "WorkLogs"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkLog"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkLog"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkLog"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkLog"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkLog"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkLog"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorkLogs/{id}": {
+      "get": {
+        "tags": [
+          "WorkLogs"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkLog"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkLog"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkLog"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "WorkLogs"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkLog"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkLog"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkLog"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "WorkLogs"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Address": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "addressCategoryID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "streetAndNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "postNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "addressCategory": {
+            "$ref": "#/components/schemas/Codebook"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BusinessFeature": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "projectID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "createdByID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "customerTerm": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "turnover": {
+            "type": "number",
+            "format": "double"
+          },
+          "businessCaseNumber": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "budgetHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "businessFeatureBusinessFeatureChildren": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BusinessFeatureBusinessFeature"
+            },
+            "nullable": true
+          },
+          "businessFeatureBusinessFeatureParents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BusinessFeatureBusinessFeature"
+            },
+            "nullable": true
+          },
+          "businessFeatureRequirements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BusinessFeatureRequirement"
+            },
+            "nullable": true
+          },
+          "createdBy": {
+            "$ref": "#/components/schemas/User"
+          },
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BusinessFeatureBusinessFeature": {
+        "type": "object",
+        "properties": {
+          "parentID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "childID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "child": {
+            "$ref": "#/components/schemas/BusinessFeature"
+          },
+          "parent": {
+            "$ref": "#/components/schemas/BusinessFeature"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BusinessFeatureRequirement": {
+        "type": "object",
+        "properties": {
+          "businessFeatureID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requirementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requirementOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "businessFeature": {
+            "$ref": "#/components/schemas/BusinessFeature"
+          },
+          "requirement": {
+            "$ref": "#/components/schemas/Requirement"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryTypeID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "ord": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "color": {
+            "type": "string",
+            "nullable": true
+          },
+          "categoryType": {
+            "$ref": "#/components/schemas/CategoryType"
+          },
+          "customerPriorities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerPriority"
+            },
+            "nullable": true
+          },
+          "supplementCategories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SupplementCategory"
+            },
+            "nullable": true
+          },
+          "requirements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Requirement"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CategoryType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "ord": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "defaultCategoryID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isRequired": {
+            "type": "boolean"
+          },
+          "isForRequirement": {
+            "type": "boolean"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Category"
+            },
+            "nullable": true
+          },
+          "supplementTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SupplementType"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ClientInstance": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "systemIdentifier": {
+            "type": "string",
+            "nullable": true
+          },
+          "titleString": {
+            "type": "string",
+            "nullable": true
+          },
+          "canSetImportance": {
+            "type": "boolean"
+          },
+          "instanceUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "paidDeploy": {
+            "type": "boolean"
+          },
+          "forbiddenRestore": {
+            "type": "boolean"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "clientUsers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClientUser"
+            },
+            "nullable": true
+          },
+          "deploys": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Deploy"
+            },
+            "nullable": true
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Project"
+            },
+            "nullable": true
+          },
+          "customers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Customer"
+            },
+            "nullable": true
+          },
+          "deploymentScripts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeploymentScript"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ClientUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "clientInstanceID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "m2GUserID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "m2GName": {
+            "type": "string",
+            "nullable": true
+          },
+          "osobaJmeno": {
+            "type": "string",
+            "nullable": true
+          },
+          "osobaTelefon": {
+            "type": "string",
+            "nullable": true
+          },
+          "organizace": {
+            "type": "string",
+            "nullable": true
+          },
+          "clientInstance": {
+            "$ref": "#/components/schemas/ClientInstance"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Codebook": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "codebookCategoryID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ord": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "key": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "type": "string",
+            "nullable": true
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Address"
+            },
+            "nullable": true
+          },
+          "codebookCategory": {
+            "$ref": "#/components/schemas/CodebookCategory"
+          },
+          "customerAssociationMembers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Customer"
+            },
+            "nullable": true
+          },
+          "customerCustomerCategories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Customer"
+            },
+            "nullable": true
+          },
+          "customerInsurances": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Customer"
+            },
+            "nullable": true
+          },
+          "customerReservationSystems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Customer"
+            },
+            "nullable": true
+          },
+          "invoiceItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceItem"
+            },
+            "nullable": true
+          },
+          "people": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Person"
+            },
+            "nullable": true
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Project"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CodebookCategory": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "valueType": {
+            "type": "string",
+            "nullable": true
+          },
+          "beforeDelete": {
+            "type": "string",
+            "nullable": true
+          },
+          "codebooks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Codebook"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Customer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerCategoryID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "associationMemberID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "insuranceID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "reservationSystemID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "reservationSystemPrice": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "field": {
+            "type": "string",
+            "nullable": true
+          },
+          "ic": {
+            "type": "string",
+            "nullable": true
+          },
+          "dic": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "fax": {
+            "type": "string",
+            "nullable": true
+          },
+          "web": {
+            "type": "string",
+            "nullable": true
+          },
+          "founded": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "catalogReadyDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "m2gID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "associationMember": {
+            "$ref": "#/components/schemas/Codebook"
+          },
+          "customerCategory": {
+            "$ref": "#/components/schemas/Codebook"
+          },
+          "insurance": {
+            "$ref": "#/components/schemas/Codebook"
+          },
+          "people": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Person"
+            },
+            "nullable": true
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Project"
+            },
+            "nullable": true
+          },
+          "reservationSystem": {
+            "$ref": "#/components/schemas/Codebook"
+          },
+          "clientInstances": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClientInstance"
+            },
+            "nullable": true
+          },
+          "releaseNotes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReleaseNote"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerPriority": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "categoryID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "category": {
+            "$ref": "#/components/schemas/Category"
+          },
+          "projectCustomerPriorities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectCustomerPriority"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Deploy": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "creatorUserID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "clientInstanceID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deployVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "deployRevision": {
+            "type": "string",
+            "nullable": true
+          },
+          "deployDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "restore": {
+            "type": "boolean"
+          },
+          "lastVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "afterVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "completionDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "inProgress": {
+            "type": "boolean"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "done": {
+            "type": "boolean"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailSubject": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailBody": {
+            "type": "string",
+            "nullable": true
+          },
+          "subRequirementID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isInvoiced": {
+            "type": "boolean"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "thisVersion": {
+            "type": "boolean"
+          },
+          "fromSubRequirementID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "deployerID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isCustomRevision": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "customRevision": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailBefore": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailBeforeSubject": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailBeforeBody": {
+            "type": "string",
+            "nullable": true
+          },
+          "deployTimeEmail": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "clientInstance": {
+            "$ref": "#/components/schemas/ClientInstance"
+          },
+          "creatorUser": {
+            "$ref": "#/components/schemas/User"
+          },
+          "deployer": {
+            "$ref": "#/components/schemas/User"
+          },
+          "fromSubRequirement": {
+            "$ref": "#/components/schemas/SubRequirement"
+          },
+          "subRequirement": {
+            "$ref": "#/components/schemas/SubRequirement"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeploymentScript": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "creationDateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "userID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "executeOn": {
+            "type": "string",
+            "nullable": true
+          },
+          "executeWhen": {
+            "type": "string",
+            "nullable": true
+          },
+          "scriptText": {
+            "type": "string",
+            "nullable": true
+          },
+          "isExecutedRepeatedly": {
+            "type": "boolean"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "isRequiredForDevs": {
+            "type": "boolean"
+          },
+          "isForRestore": {
+            "type": "boolean"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "clientInstances": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClientInstance"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DiscrepancyReport": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "version": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdByUserID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdByUser": {
+            "$ref": "#/components/schemas/User"
+          },
+          "discrepancyReportItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiscrepancyReportItem"
+            },
+            "nullable": true
+          },
+          "discrepancyReportVersions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiscrepancyReportVersion"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DiscrepancyReportItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "version": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "discrepancyReportID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requirementID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "subRequirementID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "userID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "discrepancyReportItemTypeID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "clientCost": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "cost": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "discrepancyReport": {
+            "$ref": "#/components/schemas/DiscrepancyReport"
+          },
+          "discrepancyReportItemType": {
+            "$ref": "#/components/schemas/DiscrepancyReportItemType"
+          },
+          "requirement": {
+            "$ref": "#/components/schemas/Requirement"
+          },
+          "subRequirement": {
+            "$ref": "#/components/schemas/SubRequirement"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DiscrepancyReportItemType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "ord": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "identifier": {
+            "type": "string",
+            "nullable": true
+          },
+          "discrepancyReportItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiscrepancyReportItem"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DiscrepancyReportVersion": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "version": {
+            "type": "string",
+            "nullable": true
+          },
+          "discrepancyReportID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "discrepancyReport": {
+            "$ref": "#/components/schemas/DiscrepancyReport"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Expense": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "amount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "expenseOrIncome": {
+            "type": "boolean"
+          },
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FileDatum": {
+        "type": "object",
+        "properties": {
+          "fileID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "file": {
+            "$ref": "#/components/schemas/FileObject"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FileObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "fileDatum": {
+            "$ref": "#/components/schemas/FileDatum"
+          },
+          "supplementFiles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SupplementFile"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "HelpdeskRequestPath": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requestPath": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "requirementHelpdeskData": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequirementHelpdeskDatum"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Invoice": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdByUserID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "number": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "isPaidOnTimeProbability": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "expectedPayDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "paidDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "taxDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "probableTaxDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "published": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "reversed": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "createdByUser": {
+            "$ref": "#/components/schemas/User"
+          },
+          "invoiceItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceItem"
+            },
+            "nullable": true
+          },
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          }
+        },
+        "additionalProperties": false
+      },
+      "InvoiceItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "invoiceID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "invoiceTypeID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "amountVAT": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "paid": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "invoice": {
+            "$ref": "#/components/schemas/Invoice"
+          },
+          "invoiceType": {
+            "$ref": "#/components/schemas/Codebook"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Log": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdByUserID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdByUser": {
+            "$ref": "#/components/schemas/User"
+          },
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoggedCapacity": {
+        "type": "object",
+        "properties": {
+          "userID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "milestoneID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "month": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "year": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "loggedHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "milestone": {
+            "$ref": "#/components/schemas/ProjectMilestone"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MailQueue": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fromAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "subject": {
+            "type": "string",
+            "nullable": true
+          },
+          "body": {
+            "type": "string",
+            "nullable": true
+          },
+          "subRequirementID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "requirementID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "dateTimeSent": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "dateTimeCreate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fromAddressDisplayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "mailQueueStateID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasAttachment": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "mailQueueAddressTos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MailQueueAddressTo"
+            },
+            "nullable": true
+          },
+          "mailQueueAttachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MailQueueAttachment"
+            },
+            "nullable": true
+          },
+          "mailQueueState": {
+            "$ref": "#/components/schemas/MailQueueState"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MailQueueAddressTo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "displayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "mailQueueID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "mailQueue": {
+            "$ref": "#/components/schemas/MailQueue"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MailQueueAttachment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "serverFileID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "mailQueueID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "mailQueue": {
+            "$ref": "#/components/schemas/MailQueue"
+          },
+          "serverFile": {
+            "$ref": "#/components/schemas/ServerFile"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MailQueueState": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "mailQueues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MailQueue"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Person": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "positionID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "titlesBefore": {
+            "type": "string",
+            "nullable": true
+          },
+          "titlesAfter": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "mobile": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "skype": {
+            "type": "string",
+            "nullable": true
+          },
+          "web": {
+            "type": "string",
+            "nullable": true
+          },
+          "streetAndNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "postNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "customer": {
+            "$ref": "#/components/schemas/Customer"
+          },
+          "position": {
+            "$ref": "#/components/schemas/Codebook"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PlannedCapacity": {
+        "type": "object",
+        "properties": {
+          "userID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "milestoneID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "month": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "year": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "plannedHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "milestone": {
+            "$ref": "#/components/schemas/ProjectMilestone"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PredefinedFilter": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "userID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "ord": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "filterDefinition": {
+            "type": "string",
+            "nullable": true
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "priority": {
+            "type": "string",
+            "nullable": true
+          },
+          "deploymentRequirementID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "managerUserID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "customerID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "projectTypeCodebookID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isHelpdesk": {
+            "type": "boolean"
+          },
+          "prepaidHours": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "instanceUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "worklogCoefficient": {
+            "type": "number",
+            "format": "double"
+          },
+          "clientInstanceID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "emails": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailsForDeploy": {
+            "type": "string",
+            "nullable": true
+          },
+          "budgetHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "budgetAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "budgetAmountAdditionalWork": {
+            "type": "number",
+            "format": "double"
+          },
+          "budgetAmountMagicware": {
+            "type": "number",
+            "format": "double"
+          },
+          "isInternal": {
+            "type": "boolean"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "goal": {
+            "type": "string",
+            "nullable": true
+          },
+          "isNinja": {
+            "type": "boolean"
+          },
+          "showHelpdeskFirstReactionColumn": {
+            "type": "boolean"
+          },
+          "showHelpdeskSolvingTimeColumn": {
+            "type": "boolean"
+          },
+          "showHelpdeskWaitingTimeForClientTillLastChangeByHd": {
+            "type": "boolean"
+          },
+          "workingHourFromMinutes": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "workingHourToMinutes": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "emailsForCriticalRequirements": {
+            "type": "string",
+            "nullable": true
+          },
+          "notePublic": {
+            "type": "string",
+            "nullable": true
+          },
+          "noteInternal": {
+            "type": "string",
+            "nullable": true
+          },
+          "isShowNoteEnabled": {
+            "type": "boolean"
+          },
+          "emailsForRequirements": {
+            "type": "string",
+            "nullable": true
+          },
+          "businessFeatures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BusinessFeature"
+            },
+            "nullable": true
+          },
+          "clientInstance": {
+            "$ref": "#/components/schemas/ClientInstance"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/Customer"
+          },
+          "expenses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Expense"
+            },
+            "nullable": true
+          },
+          "invoices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Invoice"
+            },
+            "nullable": true
+          },
+          "logs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Log"
+            },
+            "nullable": true
+          },
+          "managerUser": {
+            "$ref": "#/components/schemas/User"
+          },
+          "projectAccessKeys": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectAccessKey"
+            },
+            "nullable": true
+          },
+          "projectBudgets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectBudget"
+            },
+            "nullable": true
+          },
+          "projectCheckList": {
+            "$ref": "#/components/schemas/ProjectCheckList"
+          },
+          "projectCustomerPriorities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectCustomerPriority"
+            },
+            "nullable": true
+          },
+          "projectMilestones": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectMilestone"
+            },
+            "nullable": true
+          },
+          "projectTypeCodebook": {
+            "$ref": "#/components/schemas/Codebook"
+          },
+          "requirements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Requirement"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProjectAccessKey": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "accessKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProjectBudget": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dateFrom": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dateTo": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "amountAdditionalWork": {
+            "type": "number",
+            "format": "double"
+          },
+          "amountMagicware": {
+            "type": "number",
+            "format": "double"
+          },
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProjectCheckList": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "checkList": {
+            "type": "string",
+            "nullable": true
+          },
+          "idNavigation": {
+            "$ref": "#/components/schemas/Project"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProjectCustomerPriority": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerPriorityID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reactionTime": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "solutionTime": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerPriority": {
+            "$ref": "#/components/schemas/CustomerPriority"
+          },
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          },
+          "requirements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Requirement"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProjectMilestone": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "incomeAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "donePercent": {
+            "type": "number",
+            "format": "double"
+          },
+          "startMonth": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "startYear": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "endMonth": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "endYear": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "loggedCapacities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LoggedCapacity"
+            },
+            "nullable": true
+          },
+          "plannedCapacities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlannedCapacity"
+            },
+            "nullable": true
+          },
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProjectWorker": {
+        "type": "object",
+        "properties": {
+          "projectID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RelationType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "identifier": {
+            "type": "string",
+            "nullable": true
+          },
+          "requirementRelationships": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequirementRelationship"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReleaseNote": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requirementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "subject": {
+            "type": "string",
+            "nullable": true
+          },
+          "descriptionXaml": {
+            "type": "string",
+            "nullable": true
+          },
+          "descriptionText": {
+            "type": "string",
+            "nullable": true
+          },
+          "isApproved": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isImportant": {
+            "type": "boolean"
+          },
+          "releaseNoteProducts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReleaseNoteProduct"
+            },
+            "nullable": true
+          },
+          "requirement": {
+            "$ref": "#/components/schemas/Requirement"
+          },
+          "customers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Customer"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReleaseNoteProduct": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "releaseNoteID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "productID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "releaseNote": {
+            "$ref": "#/components/schemas/ReleaseNote"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Requirement": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "version": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "projectID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdByID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "assignedToID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isClosed": {
+            "type": "boolean"
+          },
+          "onTimeID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isInvoiced": {
+            "type": "boolean"
+          },
+          "invoicedType": {
+            "type": "string",
+            "nullable": true
+          },
+          "isBugFix": {
+            "type": "boolean"
+          },
+          "customerTerm": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "projectCustomerPriorityID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "customerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "assignedToCustomerUserID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "turnover": {
+            "type": "number",
+            "format": "double"
+          },
+          "processCheckListPublicDocs": {
+            "type": "boolean"
+          },
+          "processCheckListTechDocs": {
+            "type": "boolean"
+          },
+          "processCheckListTestScenario": {
+            "type": "boolean"
+          },
+          "processCheckListTesting": {
+            "type": "boolean"
+          },
+          "processCheckListCodereview": {
+            "type": "boolean"
+          },
+          "processCheckListIgnore": {
+            "type": "boolean"
+          },
+          "hasACommit": {
+            "type": "boolean"
+          },
+          "businessCaseNumber": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "progress": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "assignedTo": {
+            "$ref": "#/components/schemas/User"
+          },
+          "assignedToCustomerUser": {
+            "$ref": "#/components/schemas/User"
+          },
+          "businessFeatureRequirements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BusinessFeatureRequirement"
+            },
+            "nullable": true
+          },
+          "createdBy": {
+            "$ref": "#/components/schemas/User"
+          },
+          "discrepancyReportItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiscrepancyReportItem"
+            },
+            "nullable": true
+          },
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          },
+          "projectCustomerPriority": {
+            "$ref": "#/components/schemas/ProjectCustomerPriority"
+          },
+          "releaseNote": {
+            "$ref": "#/components/schemas/ReleaseNote"
+          },
+          "requirementComputedDatum": {
+            "$ref": "#/components/schemas/RequirementComputedDatum"
+          },
+          "requirementCostCorrections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequirementCostCorrection"
+            },
+            "nullable": true
+          },
+          "requirementFullText": {
+            "$ref": "#/components/schemas/RequirementFullText"
+          },
+          "requirementHelpdeskDatum": {
+            "$ref": "#/components/schemas/RequirementHelpdeskDatum"
+          },
+          "requirementLogs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequirementLog"
+            },
+            "nullable": true
+          },
+          "requirementRelationshipRelatedRequirements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequirementRelationship"
+            },
+            "nullable": true
+          },
+          "requirementRelationshipSourceRequirements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequirementRelationship"
+            },
+            "nullable": true
+          },
+          "requirementUserNotes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequirementUserNote"
+            },
+            "nullable": true
+          },
+          "subRequirements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SubRequirement"
+            },
+            "nullable": true
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Category"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RequirementCategoryHistory": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requirementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "oldCategoryID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "newCategoryID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "changedDateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "subrequirementID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "subrequirement": {
+            "$ref": "#/components/schemas/SubRequirement"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RequirementComputedDatum": {
+        "type": "object",
+        "properties": {
+          "requirementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isDone": {
+            "type": "boolean"
+          },
+          "lastModifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "totalWorkLogSeconds": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "estimateTimeClient": {
+            "type": "number",
+            "format": "double"
+          },
+          "estimateTime": {
+            "type": "number",
+            "format": "double"
+          },
+          "estimateEffort": {
+            "type": "number",
+            "format": "double"
+          },
+          "respondedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "timeSpentOnSolution": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "solutionStartAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "resolvedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "totalCost": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalWorkLogSecondsDev": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasCommit": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "helpdeskAcceptedTime": {
+            "type": "number",
+            "format": "double"
+          },
+          "mwResolvedTime": {
+            "type": "number",
+            "format": "double"
+          },
+          "clientApprovedTime": {
+            "type": "number",
+            "format": "double"
+          },
+          "isManualClientApprovedTime": {
+            "type": "boolean"
+          },
+          "isManualHelpdeskAcceptedTime": {
+            "type": "boolean"
+          },
+          "isManualMWResolvedTime": {
+            "type": "boolean"
+          },
+          "lastModificationAuthor": {
+            "type": "string",
+            "nullable": true
+          },
+          "requirement": {
+            "$ref": "#/components/schemas/Requirement"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RequirementCostCorrection": {
+        "type": "object",
+        "properties": {
+          "requirementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workerUserID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "requirement": {
+            "$ref": "#/components/schemas/Requirement"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "workerUser": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RequirementFullText": {
+        "type": "object",
+        "properties": {
+          "requirementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fulltextSearchableText": {
+            "type": "string",
+            "nullable": true
+          },
+          "isChanged": {
+            "type": "boolean"
+          },
+          "requirement": {
+            "$ref": "#/components/schemas/Requirement"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RequirementHelpdeskDatum": {
+        "type": "object",
+        "properties": {
+          "requirementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "helpdeskRequestPathID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "browser": {
+            "type": "string",
+            "nullable": true
+          },
+          "os": {
+            "type": "string",
+            "nullable": true
+          },
+          "helpdeskRequestPath": {
+            "$ref": "#/components/schemas/HelpdeskRequestPath"
+          },
+          "requirement": {
+            "$ref": "#/components/schemas/Requirement"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RequirementLog": {
+        "type": "object",
+        "properties": {
+          "requirementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "changeType": {
+            "type": "string",
+            "nullable": true
+          },
+          "oldValue": {
+            "type": "string",
+            "nullable": true
+          },
+          "newValue": {
+            "type": "string",
+            "nullable": true
+          },
+          "userID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requirement": {
+            "$ref": "#/components/schemas/Requirement"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RequirementRelationship": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sourceRequirementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "relatedRequirementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "relationTypeID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "relatedRequirement": {
+            "$ref": "#/components/schemas/Requirement"
+          },
+          "relationType": {
+            "$ref": "#/components/schemas/RelationType"
+          },
+          "sourceRequirement": {
+            "$ref": "#/components/schemas/Requirement"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RequirementUserNote": {
+        "type": "object",
+        "properties": {
+          "requirementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "noteText": {
+            "type": "string",
+            "nullable": true
+          },
+          "requirement": {
+            "$ref": "#/components/schemas/Requirement"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Role": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "key": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ScrumSprint": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "totalEffort": {
+            "type": "number",
+            "format": "double"
+          },
+          "remainingEffort": {
+            "type": "number",
+            "format": "double"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SubRequirement"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ServerFile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "filePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "fileType": {
+            "type": "string",
+            "nullable": true
+          },
+          "insertedDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "sufixLength": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "mailQueueAttachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MailQueueAttachment"
+            },
+            "nullable": true
+          },
+          "supplementFiles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SupplementFile"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SubRequirement": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "parentID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "requirementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isDone": {
+            "type": "boolean"
+          },
+          "isSolved": {
+            "type": "boolean"
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdByID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "assignedToID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isInvoiced": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "totalWorkLogSeconds": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isVisibleToClient": {
+            "type": "boolean"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "versionNo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lastModifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "estimateTimeClient": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "estimateTime": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalEstimateTimeClient": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalEstimateTime": {
+            "type": "number",
+            "format": "double"
+          },
+          "estimateEffort": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalEstimateEffort": {
+            "type": "number",
+            "format": "double"
+          },
+          "isBugFix": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "preEstimateTime": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "preEstimateTimeClient": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "preEstimateEffort": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalWorkLogSecondsDev": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "assignedTo": {
+            "$ref": "#/components/schemas/User"
+          },
+          "createdBy": {
+            "$ref": "#/components/schemas/User"
+          },
+          "deployFromSubRequirements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Deploy"
+            },
+            "nullable": true
+          },
+          "deploySubRequirements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Deploy"
+            },
+            "nullable": true
+          },
+          "discrepancyReportItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiscrepancyReportItem"
+            },
+            "nullable": true
+          },
+          "inverseParent": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SubRequirement"
+            },
+            "nullable": true
+          },
+          "parent": {
+            "$ref": "#/components/schemas/SubRequirement"
+          },
+          "requirement": {
+            "$ref": "#/components/schemas/Requirement"
+          },
+          "requirementCategoryHistories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequirementCategoryHistory"
+            },
+            "nullable": true
+          },
+          "subscriptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Subscription"
+            },
+            "nullable": true
+          },
+          "supplements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Supplement"
+            },
+            "nullable": true
+          },
+          "workLogs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkLog"
+            },
+            "nullable": true
+          },
+          "sprints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScrumSprint"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Subscription": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "subscriberID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "subscriber": {
+            "$ref": "#/components/schemas/User"
+          },
+          "task": {
+            "$ref": "#/components/schemas/SubRequirement"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Supplement": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "subRequirementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "typeID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "subRequirement": {
+            "$ref": "#/components/schemas/SubRequirement"
+          },
+          "supplementCategory": {
+            "$ref": "#/components/schemas/SupplementCategory"
+          },
+          "supplementDateTime": {
+            "$ref": "#/components/schemas/SupplementDateTime"
+          },
+          "supplementDeploymentScript": {
+            "$ref": "#/components/schemas/SupplementDeploymentScript"
+          },
+          "supplementFile": {
+            "$ref": "#/components/schemas/SupplementFile"
+          },
+          "supplementGitCommit": {
+            "$ref": "#/components/schemas/SupplementGitCommit"
+          },
+          "supplementText": {
+            "$ref": "#/components/schemas/SupplementText"
+          },
+          "type": {
+            "$ref": "#/components/schemas/SupplementType"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SupplementCategory": {
+        "type": "object",
+        "properties": {
+          "supplementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "category": {
+            "$ref": "#/components/schemas/Category"
+          },
+          "supplement": {
+            "$ref": "#/components/schemas/Supplement"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SupplementDateTime": {
+        "type": "object",
+        "properties": {
+          "supplementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dateTimeValue": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "supplement": {
+            "$ref": "#/components/schemas/Supplement"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SupplementDeploymentScript": {
+        "type": "object",
+        "properties": {
+          "supplementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deploymentScriptID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isTerminating": {
+            "type": "boolean"
+          },
+          "supplement": {
+            "$ref": "#/components/schemas/Supplement"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SupplementFile": {
+        "type": "object",
+        "properties": {
+          "supplementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fileID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "serverFileID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "file": {
+            "$ref": "#/components/schemas/FileObject"
+          },
+          "serverFile": {
+            "$ref": "#/components/schemas/ServerFile"
+          },
+          "supplement": {
+            "$ref": "#/components/schemas/Supplement"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SupplementGitCommit": {
+        "type": "object",
+        "properties": {
+          "supplementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "commit": {
+            "type": "string",
+            "nullable": true
+          },
+          "shortCommit": {
+            "type": "string",
+            "nullable": true
+          },
+          "branch": {
+            "type": "string",
+            "nullable": true
+          },
+          "buildNumber": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "supplement": {
+            "$ref": "#/components/schemas/Supplement"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SupplementText": {
+        "type": "object",
+        "properties": {
+          "supplementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "text": {
+            "type": "string",
+            "nullable": true
+          },
+          "supplement": {
+            "$ref": "#/components/schemas/Supplement"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SupplementType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "shortName": {
+            "type": "string",
+            "nullable": true
+          },
+          "valueType": {
+            "type": "string",
+            "nullable": true
+          },
+          "ord": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryTypeID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isMultiValue": {
+            "type": "boolean"
+          },
+          "categoryType": {
+            "$ref": "#/components/schemas/CategoryType"
+          },
+          "supplements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Supplement"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "roleID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "clientUserID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "shortName": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "settings": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "requiresSolvedTaskNotifications": {
+            "type": "boolean"
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "notificationsData": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "cost": {
+            "type": "number",
+            "format": "double"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "businessFeatures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BusinessFeature"
+            },
+            "nullable": true
+          },
+          "deployCreatorUsers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Deploy"
+            },
+            "nullable": true
+          },
+          "deployDeployers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Deploy"
+            },
+            "nullable": true
+          },
+          "deploymentScripts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeploymentScript"
+            },
+            "nullable": true
+          },
+          "discrepancyReportItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiscrepancyReportItem"
+            },
+            "nullable": true
+          },
+          "discrepancyReports": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiscrepancyReport"
+            },
+            "nullable": true
+          },
+          "invoiceItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceItem"
+            },
+            "nullable": true
+          },
+          "invoices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Invoice"
+            },
+            "nullable": true
+          },
+          "loggedCapacities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LoggedCapacity"
+            },
+            "nullable": true
+          },
+          "logs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Log"
+            },
+            "nullable": true
+          },
+          "plannedCapacities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlannedCapacity"
+            },
+            "nullable": true
+          },
+          "predefinedFilters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PredefinedFilter"
+            },
+            "nullable": true
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Project"
+            },
+            "nullable": true
+          },
+          "requirementAssignedToCustomerUsers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Requirement"
+            },
+            "nullable": true
+          },
+          "requirementAssignedTos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Requirement"
+            },
+            "nullable": true
+          },
+          "requirementCostCorrectionUsers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequirementCostCorrection"
+            },
+            "nullable": true
+          },
+          "requirementCostCorrectionWorkerUsers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequirementCostCorrection"
+            },
+            "nullable": true
+          },
+          "requirementCreatedBies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Requirement"
+            },
+            "nullable": true
+          },
+          "requirementLogs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequirementLog"
+            },
+            "nullable": true
+          },
+          "requirementUserNotes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequirementUserNote"
+            },
+            "nullable": true
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "subRequirementAssignedTos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SubRequirement"
+            },
+            "nullable": true
+          },
+          "subRequirementCreatedBies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SubRequirement"
+            },
+            "nullable": true
+          },
+          "subscriptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Subscription"
+            },
+            "nullable": true
+          },
+          "workLogs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkLog"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "WorkLog": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workTypeID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "subRequirementID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "seconds": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "isInvoiced": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "userID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "wasInvoiced": {
+            "type": "boolean"
+          },
+          "isBugFix": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdUserID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "modifiedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "modifiedUserID": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "subRequirement": {
+            "$ref": "#/components/schemas/SubRequirement"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "workType": {
+            "$ref": "#/components/schemas/WorkType"
+          }
+        },
+        "additionalProperties": false
+      },
+      "WorkType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "workLogs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkLog"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

@@ -8,8 +8,9 @@ import type { MatrixHandle } from '../components/ProjectDetail/CapacityMatrix'
 import ProjectHeader from '../components/ProjectDetail/ProjectHeader'
 import useTexts from '../hooks/useTexts'
 import CapacityLegend from '../components/shared/CapacityLegend'
-import MilestoneEditModal from '../components/ProjectDetail/MilestoneEditModal'
-import ProjectUsersModal from '../components/ProjectDetail/ProjectUsersModal'
+import MilestoneEditModal from '../components/modals/MilestoneEditModal'
+import ProjectUsersModal from '../components/modals/ProjectUsersModal'
+import { useModal } from '../components/modals/ModalContext'
 
 
 export default function ProjectDetailPage() {
@@ -110,7 +111,7 @@ export default function ProjectDetailPage() {
     const texts = useTexts()
 
     const matrixRef = useRef<MatrixHandle | null>(null)
-    const [showUsersModal, setShowUsersModal] = useState(false)
+    const { showModal } = useModal()
 
 
     if (loading) return <div>{texts.general.loading}</div>
@@ -140,7 +141,7 @@ export default function ProjectDetailPage() {
                         onTogglePlan={() => setShowPlan(v => !v)}
                         onToggleLogged={() => setShowLogged(v => !v)}
                         onToggleEdit={() => setEditMode(v => !v)}
-                        onManageUsers={() => setShowUsersModal(true)}
+                        onManageUsers={() => showModal(<ProjectUsersModal projectId={id} users={allUsers} onSaved={() => { reloadProjectUsers() }} />)}
                     />
                 </div>
             </div>
@@ -155,13 +156,14 @@ export default function ProjectDetailPage() {
                 showLogged={showLogged}
                 editMode={editMode}
                 users={users}
+                projectId={id}
                 onReload={reload}
-                onEditMilestone={setEditingMilestone}
+                onEditMilestone={(m) => showModal(<MilestoneEditModal milestone={m} onSave={async (mm: any) => { await handleSaveMilestone(mm); }} />)}
                 onAddMonth={handleAddMonth}
                 ref={matrixRef}
             />
 
-            <ProjectUsersModal open={showUsersModal} projectId={id} users={allUsers} onClose={() => setShowUsersModal(false)} onSaved={() => { reloadProjectUsers() }} />
+            {/* ProjectUsersModal is opened via ModalContext.showModal from ProjectHeader */}
 
             {/* OVERALL KPI */}
             <div className="grid grid-cols-3 gap-6">
@@ -183,12 +185,7 @@ export default function ProjectDetailPage() {
 
             </div>
 
-            <MilestoneEditModal
-                open={!!editingMilestone}
-                milestone={editingMilestone}
-                onClose={() => setEditingMilestone(null)}
-                onSave={handleSaveMilestone}
-            />
+            {/* MilestoneEditModal is opened via ModalContext.showModal from CapacityMatrix */}
         </div>
     )
 }

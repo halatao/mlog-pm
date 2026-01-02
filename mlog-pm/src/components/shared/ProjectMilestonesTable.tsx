@@ -1,6 +1,7 @@
 import type { Project, ProjectMilestone, User } from '../../types'
 import useTexts from '../../hooks/useTexts'
 import { getUserRole, getRoleColorClass, getInitials } from '../../hooks/useRoles'
+import { Link } from 'react-router-dom'
 
 interface Row {
     project: Project
@@ -121,7 +122,9 @@ export default function ProjectMilestonesTable({ project, rows, users, participa
 
                         return (
                             <tr key={`m-${project.id}-${idx2}`} className="border-t tp-border">
-                                <td className="px-4 py-3 font-medium">{rr.milestone.name}</td>
+                                <td className="px-4 py-3 font-medium">
+                                    <Link to={`/projects/${project.id}/milestones/${rr.milestone.id}`} className="tp-text underline">{rr.milestone.name}</Link>
+                                </td>
                                 {participants.map(p => (
                                     <td key={`cell-${project.id}-${rr.milestone.id}-${p.id}`} className="text-center">
                                         <div className="font-medium">{showPlan ? String(rr.plannedByUser[p.id] || 0) : ''}{(showPlan && showLogged) ? ' / ' : ''}{showLogged ? String(rr.loggedByUser[p.id] || 0) : ''}</div>
