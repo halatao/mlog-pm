@@ -19,7 +19,6 @@ export default function ProjectDetailPage() {
 
     const [project, setProject] = useState<Project | null>(null)
     const [milestones, setMilestones] = useState<ProjectMilestone[]>([])
-    const [editingMilestone, setEditingMilestone] = useState<ProjectMilestone | null>(null)
     const [planned, setPlanned] = useState<PlannedCapacity[]>([])
     const [logged, setLogged] = useState<LoggedCapacity[]>([])
     const [users, setUsers] = useState<User[]>([])

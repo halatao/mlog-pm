@@ -5,10 +5,10 @@ import ModalWrapper from './ModalWrapper'
 import useTexts from '../../hooks/useTexts'
 
 interface Props {
-    open: boolean
+    open?: boolean
     projectId: number
     users: User[]
-    onClose: () => void
+    onClose?: () => void
     onSaved?: () => void
 }
 
@@ -18,25 +18,27 @@ export default function ProjectUsersModal({ open, projectId, users, onClose, onS
     const [saving, setSaving] = useState(false)
 
     useEffect(() => {
-        if (!open) return
+        if (open === false) return
         setSelected(users.map(u => u.id))
     }, [open, users])
 
-    if (!open) return null
+    if (open === false) return null
+
+    const onCloseFn = onClose ?? (() => {})
 
     async function handleSave() {
         setSaving(true)
         try {
             await updateProjectUsers(projectId, selected)
             if (onSaved) onSaved()
-            onClose()
+            onCloseFn()
         } finally {
             setSaving(false)
         }
     }
 
     return (
-        <ModalWrapper open={open} onClose={onClose} title={texts.projectUsersModal?.title} maxWidth="max-w-lg">
+        <ModalWrapper open={open} onClose={onCloseFn} title={texts.projectUsersModal?.title} maxWidth="max-w-lg">
             <div className="space-y-2">
                 {users.map(u => (
                     <label key={u.id} className="flex items-center gap-2">

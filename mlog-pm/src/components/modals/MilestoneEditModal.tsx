@@ -6,8 +6,8 @@ import ModalWrapper from './ModalWrapper'
 
 interface Props {
     milestone: ProjectMilestone | null
-    open: boolean
-    onClose: () => void
+    open?: boolean
+    onClose?: () => void
     onSave: (m: ProjectMilestone) => Promise<void>
 }
 
@@ -21,20 +21,22 @@ export default function MilestoneEditModal({ milestone, open, onClose, onSave }:
     const texts = useTexts()
     const months = useMonths()
 
-    if (!open || !local) return null
+    if (open === false || !local) return null
+
+    const onCloseFn = onClose ?? (() => {})
 
     async function handleSave() {
         setSaving(true)
         try {
             await onSave(local!)
-            onClose()
+            onCloseFn()
         } finally {
             setSaving(false)
         }
     }
 
     return (
-        <ModalWrapper open={open} onClose={onClose} title={texts.milestoneModal.title} maxWidth="max-w-xl">
+        <ModalWrapper open={open} onClose={onCloseFn} title={texts.milestoneModal.title} maxWidth="max-w-xl">
             <div className="grid grid-cols-2 gap-2">
                 <label className="text-sm">{texts.milestoneModal.nameLabel}
                     <input className="w-full mt-1 p-2 tp-text rounded border tp-border" value={local.name} onChange={e => setLocal({ ...local, name: e.target.value })} />
