@@ -1,4 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import WorkLogsModal from '../modals/WorkLogsModal'
+import { useModal } from '../modals/ModalContext'
+import { useWorkLogs } from '../../contexts/WorkLogsContext'
+import type { WorkLog } from '../../types'
+import { useUsers } from '../../contexts/UsersContext'
 
 interface Props {
   userId: number
@@ -16,6 +21,10 @@ interface Props {
 import useTexts from '../../hooks/useTexts'
 
 export default function CapacityCell({
+  userId,
+  milestoneId,
+  month,
+  year,
   planned = 0,
   logged = 0,
   showPlan = true,
@@ -26,6 +35,34 @@ export default function CapacityCell({
   const texts = useTexts()
   const [editing, setEditing] = useState(false)
   const [local, setLocal] = useState(String(planned ?? ''))
+  const { showModal } = useModal()
+  const workLogs = useWorkLogs()
+  const { users } = useUsers()
+  const [cellLoggedHours, setCellLoggedHours] = useState<number | null>(null)
+  const [cellWorkLogs, setCellWorkLogs] = useState<WorkLog[]>([])
+
+  useEffect(() => {
+    let mounted = true
+    async function load() {
+      try {
+        const hours = await workLogs.getLoggedForUser(milestoneId, month, year, userId)
+        const w = await workLogs.getWorkLogsForMilestone(milestoneId)
+        const want = `${year}-${String(month).padStart(2, '0')}`
+        const filtered = w.filter(wl => wl.userId === userId && (typeof wl.date === 'string' ? wl.date.slice(0, 7) === want : false))
+        if (!mounted) return
+        setCellWorkLogs(filtered)
+        setCellLoggedHours(Math.round(((hours) + Number.EPSILON) * 100) / 100)
+      } catch (err) {
+        console.debug('Failed to compute cell worklogs', err)
+        if (mounted) {
+          setCellWorkLogs([])
+          setCellLoggedHours(0)
+        }
+      }
+    }
+    void load()
+    return () => { mounted = false }
+  }, [workLogs, milestoneId, userId, month, year])
 
   function commit() {
     const num = Number(local) || 0
@@ -63,12 +100,46 @@ export default function CapacityCell({
               <>
                 <span className="tp-text">{planned ?? 0}</span>
                 <span className="tp-muted">/</span>
-                <span className="tp-muted">{logged ?? 0}</span>
+                {((cellLoggedHours ?? logged) ?? 0) > 0 ? (
+                  <button
+                    className="tp-muted"
+                    type="button"
+                    onClick={async (e) => {
+                      e.stopPropagation(); e.preventDefault()
+                      try {
+                        const filtered = cellWorkLogs.length > 0 ? cellWorkLogs : (await workLogs.getWorkLogsForMilestone(milestoneId)).filter(wl => wl.userId === userId)
+                        showModal(<WorkLogsModal workLogs={filtered} users={users} />)
+                      } catch (err) {
+                        console.debug('Failed to load worklogs for modal', err)
+                        showModal(<WorkLogsModal workLogs={[]} users={users} />)
+                      }
+                    }}
+                  >{cellLoggedHours !== null ? cellLoggedHours : (logged ?? 0)}</button>
+                ) : (
+                  <span className="tp-muted">{cellLoggedHours !== null ? cellLoggedHours : (logged ?? 0)}</span>
+                )}
               </>
             ) : onlyPlan ? (
               <span className="tp-text">{planned ?? 0}</span>
             ) : onlyLogged ? (
-              <span className="tp-muted">{logged ?? 0}</span>
+              ((cellLoggedHours ?? logged) ?? 0) > 0 ? (
+                <button
+                  className="tp-muted"
+                  type="button"
+                  onClick={async (e) => {
+                    e.stopPropagation(); e.preventDefault()
+                    try {
+                      const filtered = cellWorkLogs.length > 0 ? cellWorkLogs : (await workLogs.getWorkLogsForMilestone(milestoneId)).filter(wl => wl.userId === userId)
+                      showModal(<WorkLogsModal workLogs={filtered} users={users} />)
+                    } catch (err) {
+                      console.debug('Failed to load worklogs for modal', err)
+                      showModal(<WorkLogsModal workLogs={[]} users={users} />)
+                    }
+                  }}
+                >{cellLoggedHours !== null ? cellLoggedHours : (logged ?? 0)}</button>
+              ) : (
+                <span className="tp-muted">{cellLoggedHours !== null ? cellLoggedHours : (logged ?? 0)}</span>
+              )
             ) : (
               <span className="tp-muted">-</span>
             )}

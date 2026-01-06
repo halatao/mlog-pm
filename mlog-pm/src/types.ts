@@ -87,6 +87,15 @@ export interface WorkLog {
   description?: string;
 }
 
+export interface DailyPlanItem {
+  id: number
+  date: string // YYYY-MM-DD
+  userId: number
+  subRequirementId: number
+  checkedAt?: string // ISO timestamp when PM marked it
+  loggedSeconds?: number
+}
+
 export interface ChangeHistoryEntry {
   userName: string;
   date: string; // formatted date/time

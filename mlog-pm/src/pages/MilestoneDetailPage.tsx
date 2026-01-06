@@ -3,19 +3,12 @@ import { useParams } from 'react-router-dom'
 import useTexts from '../hooks/useTexts'
 import useRoles from '../hooks/useRoles'
 import useMonths from '../hooks/useMonths'
-import {
-    fetchProject,
-    fetchMilestones,
-    fetchPlannedCapacities,
-    fetchUsers,
-    fetchRequirements,
-    fetchSubRequirementsForMilestone,
-    fetchWorkLogsForMilestone,
-    createRequirement,
-    updateRequirement,
-    createWorkLog,
-} from '../api'
-import type { ProjectMilestone, User, Requirement, SubRequirement, WorkLog } from '../types'
+import { createRequirement, updateRequirement, createWorkLog } from '../api'
+import type { User, Requirement, SubRequirement, WorkLog } from '../types'
+import { useUsers } from '../contexts/UsersContext'
+import { useProjects } from '../contexts/ProjectsContext'
+import { RequirementsProvider, useRequirements } from '../contexts/RequirementsContext'
+import { useWorkLogs } from '../contexts/WorkLogsContext'
 import TaskEditModal from '../components/modals/TaskEditModal'
 import RequirementEditModal from '../components/modals/RequirementEditModal'
 import WorkLogModal from '../components/modals/WorkLogModal'
@@ -26,30 +19,67 @@ export default function MilestoneDetailPage() {
     const { projectId, milestoneId } = useParams<{ projectId: string; milestoneId: string }>()
     const pid = Number(projectId)
     const mid = Number(milestoneId)
+
+    return (
+        <RequirementsProvider projectIds={pid ? [pid] : []} milestoneIds={mid ? [mid] : []}>
+            <MilestoneDetailContent pid={pid} mid={mid} />
+        </RequirementsProvider>
+    )
+}
+
+function MilestoneDetailContent({ pid, mid }: { pid: number; mid: number }) {
     const texts = useTexts()
     const roles = useRoles()
+    const months = useMonths()
+    const { users } = useUsers()
+    const { projects, projectData, reload: reloadProjects } = useProjects()
+    const { requirementsMap, subReqMap, reload: reloadRequirements } = useRequirements()
+    const workLogs = useWorkLogs()
+    const { showModal } = useModal()
 
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [projectName, setProjectName] = useState<string>('')
-    const [milestone, setMilestone] = useState<ProjectMilestone | null>(null)
-    const [users, setUsers] = useState<User[]>([])
-    const [planned, setPlanned] = useState<Record<number, number>>({})
-    const [logged, setLogged] = useState<Record<number, number>>({})
-    const [requirements, setRequirements] = useState<Requirement[]>([])
-    const [subRequirementsState, setSubRequirementsState] = useState<SubRequirement[]>([])
-    const [loggedBySub, setLoggedBySub] = useState<Record<number, number>>({})
-    const [workLogs, setWorkLogs] = useState<WorkLog[]>([])
-    const { showModal } = useModal()
     const [taskModalOpen, setTaskModalOpen] = useState(false)
     const [editingTask, setEditingTask] = useState<SubRequirement | null>(null)
     const [workLogModalOpen, setWorkLogModalOpen] = useState(false)
     const [workLogInitialSubId, setWorkLogInitialSubId] = useState<number | null>(null)
-    const [reloadCounter, setReloadCounter] = useState(0)
     const [requirementModalOpen, setRequirementModalOpen] = useState(false)
     const [editingRequirement, setEditingRequirement] = useState<Requirement | null>(null)
+    const [wlogs, setWlogs] = useState<WorkLog[]>([])
+    const [loggedBySub, setLoggedBySub] = useState<Record<number, number>>({})
+    const [localSubs, setLocalSubs] = useState<SubRequirement[]>(() => subReqMap[mid] || [])
 
-    const months = useMonths()
+    useEffect(() => {
+        setLocalSubs(subReqMap[mid] || [])
+    }, [subReqMap, mid])
+
+    const project = projects.find(p => p.id === pid)
+    const milestone = (projectData[pid]?.milestones || []).find(m => m.id === mid) || null
+
+    useEffect(() => {
+        let mounted = true
+        async function load() {
+            try {
+                setLoading(true)
+                if (!pid || !mid) {
+                    setError('Missing ids')
+                    return
+                }
+                const w = await workLogs.getWorkLogsForMilestone(mid)
+                const map = await workLogs.getLoggedBySubForMilestone(mid)
+                if (!mounted) return
+                setWlogs(w)
+                setLoggedBySub(map)
+            } catch (err) {
+                const msg = err instanceof Error ? err.message : String(err)
+                setError(msg)
+            } finally {
+                setLoading(false)
+            }
+        }
+        void load()
+        return () => { mounted = false }
+    }, [pid, mid, workLogs])
 
     function getAvatarClassByUser(u: User) {
         const role = roles.getUserRole(u)
@@ -63,74 +93,18 @@ export default function MilestoneDetailPage() {
         return `${whole}:${String(minutes).padStart(2, '0')}`
     }
 
-    useEffect(() => {
-        let mounted = true
-        async function load() {
-            setLoading(true)
-            try {
-                if (!pid || !mid) throw new Error('Missing ids')
-                const [proj, ms, us, plannedAll, reqs, subs, wlogs] = await Promise.all([
-                    fetchProject(pid),
-                    fetchMilestones(pid),
-                    fetchUsers(pid),
-                    fetchPlannedCapacities(pid),
-                    fetchRequirements(pid),
-                    fetchSubRequirementsForMilestone(mid),
-                    fetchWorkLogsForMilestone(mid),
-                ])
+    // derive per-user planned from projectData and logged from actual worklogs (seconds -> hours)
+    const plannedEntries = (projectData[pid]?.planned || []).filter(p => p.milestoneId === mid)
+    const pmap: Record<number, number> = {}
+    users.forEach(u => { pmap[u.id] = 0 })
+    plannedEntries.forEach(p => { pmap[p.userId] = (pmap[p.userId] || 0) + (p.plannedHours || 0) })
 
-                if (!mounted) return
-                setProjectName(proj.name)
-                const found = ms.find(m => m.id === mid) || null
-                setMilestone(found)
-                setUsers(us)
-
-                const pmap: Record<number, number> = {}
-                const lmap: Record<number, number> = {}
-                us.forEach(u => {
-                    pmap[u.id] = 0
-                    lmap[u.id] = 0
-                })
-                plannedAll
-                    .filter(p => p.milestoneId === mid)
-                    .forEach(p => {
-                        pmap[p.userId] = (pmap[p.userId] || 0) + (p.plannedHours || 0)
-                    })
-                // derive logged hours from work logs (seconds -> hours)
-                const wlogsArr: WorkLog[] = wlogs ?? []
-                wlogsArr.forEach((w: WorkLog) => {
-                    const hours = (w.seconds || 0) / 3600
-                    lmap[w.userId] = (lmap[w.userId] || 0) + hours
-                })
-                setPlanned(pmap)
-                // round to 2 decimals for display
-                const roundedLogged: Record<number, number> = {}
-                Object.keys(lmap).forEach(k => { roundedLogged[Number(k)] = Math.round((lmap[Number(k)] + Number.EPSILON) * 100) / 100 })
-                setLogged(roundedLogged)
-                setRequirements(reqs)
-                setSubRequirementsState(subs)
-                setWorkLogs(wlogs)
-
-                // build loggedBySub (hours per subRequirement)
-                const loggedMap: Record<number, number> = {}
-                wlogsArr.forEach((w: WorkLog) => {
-                    loggedMap[w.subRequirementId] = (loggedMap[w.subRequirementId] || 0) + ((w.seconds || 0) / 3600)
-                })
-                // round values to 2 decimals
-                Object.keys(loggedMap).forEach(k => { loggedMap[Number(k)] = Math.round((loggedMap[Number(k)] + Number.EPSILON) * 100) / 100 })
-                setLoggedBySub(loggedMap)
-            } catch (err: unknown) {
-                const msg = err instanceof Error ? err.message : String(err)
-                setError(msg)
-            } finally {
-                setLoading(false)
-            }
-        }
-        load()
-        return () => {
-            mounted = false
-        }
-    }, [pid, mid, reloadCounter])
+    // aggregate logged seconds from loaded worklogs for accuracy (matches modal)
+    const lmapSeconds: Record<number, number> = {}
+    users.forEach(u => { lmapSeconds[u.id] = 0 })
+    wlogs.forEach(w => { lmapSeconds[w.userId] = (lmapSeconds[w.userId] || 0) + (w.seconds || 0) })
+    const roundedLogged: Record<number, number> = {}
+    Object.keys(lmapSeconds).forEach(k => { roundedLogged[Number(k)] = Math.round(((lmapSeconds[Number(k)] / 3600) + Number.EPSILON) * 100) / 100 })
 
     if (loading) return <div className="p-6">{texts.general.loading}</div>
     if (error) return <div className="p-6">{texts.general.errorPrefix} {error}</div>
@@ -147,7 +121,7 @@ export default function MilestoneDetailPage() {
                     <div>
                         <div className="text-xs tp-muted">Milník</div>
                         <div className="text-3xl md:text-4xl font-semibold leading-tight">{milestone.name}</div>
-                        {projectName ? <div className="text-sm tp-muted mt-1">{projectName}</div> : null}
+                        {project?.name ? <div className="text-sm tp-muted mt-1">{project?.name}</div> : null}
                     </div>
 
                     <div className="mt-4">
@@ -195,8 +169,8 @@ export default function MilestoneDetailPage() {
                                 </thead>
                                 <tbody>
                                     {users.map(u => {
-                                        const p = planned[u.id] || 0
-                                        const l = logged[u.id] || 0
+                                        const p = pmap[u.id] || 0
+                                        const l = roundedLogged[u.id] || 0
                                         const diff = l - p
                                         return (
                                             <tr key={`sum-${u.id}`} className="border-t tp-border">
@@ -211,7 +185,7 @@ export default function MilestoneDetailPage() {
                                                 </td>
                                                 <td className="px-4 py-3 text-right">{p}</td>
                                                 <td className="px-4 py-3 text-right">
-                                                    <button className="text-right w-full text-sm tp-text" onClick={(e) => { e.stopPropagation(); e.preventDefault(); showModal(<WorkLogsModal workLogs={workLogs.filter(w => w.userId === u.id)} users={users} />); }} aria-label={`Zobrazit logy uživatele ${u.firstName}`}>{l}</button>
+                                                    <button className="text-right w-full text-sm tp-text" onClick={(e) => { e.stopPropagation(); e.preventDefault(); showModal(<WorkLogsModal workLogs={wlogs.filter(w => w.userId === u.id)} users={users} />); }} aria-label={`Zobrazit logy uživatele ${u.firstName}`}>{l}</button>
                                                 </td>
                                                 <td className={`px-4 py-3 text-right ${diff < 0 ? 'text-red-600' : diff > 0 ? 'text-green-600' : ''}`}>{diff < 0 ? String(diff) : diff > 0 ? `+${diff}` : '0'}</td>
                                             </tr>
@@ -226,22 +200,22 @@ export default function MilestoneDetailPage() {
 
             {/* TASK GROUPS */}
             <div className="tp-card rounded-lg shadow p-6 space-y-6">
-                {subRequirementsState.length === 0 ? (
+                {(localSubs.length === 0) ? (
                     <div className="text-sm tp-muted">Žádné úkoly v tomto milníku.</div>
                 ) : (
                     Object.entries(
-                        subRequirementsState.reduce((acc: Record<number, SubRequirement[]>, s) => {
+                        localSubs.reduce((acc: Record<number, SubRequirement[]>, s) => {
                             if (!acc[s.requirementId]) acc[s.requirementId] = []
                             acc[s.requirementId].push(s)
                             return acc
                         }, {})
                     ).map(([reqId, subs]) => {
-                        const req = requirements.find(r => r.id === Number(reqId))
+                        const req = (requirementsMap[pid] || []).find(r => r.id === Number(reqId))
                         return (
                             <div key={reqId}>
                                 <div className="flex items-center gap-2 mb-2">
                                     <div className="font-semibold">{req?.name}</div>
-                                    {req?.category ? <div className="text-xs tp-muted ml-2">{req.category}</div> : null}
+                                        {req?.category ? <div className="text-xs tp-muted ml-2">{req.category}</div> : null}
                                     {req?.priority ? <div className="text-xs tp-muted ml-2">{req.priority}</div> : null}
                                     <div className="ml-auto flex items-center gap-2">
                                         <button
@@ -256,7 +230,7 @@ export default function MilestoneDetailPage() {
                                             onClick={(e) => {
                                                 e.stopPropagation(); e.preventDefault();
                                                 // prefill with first subRequirement of this requirement if available
-                                                const firstSub = subRequirementsState.find(s => s.requirementId === req?.id)
+                                                const firstSub = localSubs.find(s => s.requirementId === req?.id)
                                                 setWorkLogInitialSubId(firstSub ? firstSub.id : null)
                                                 setWorkLogModalOpen(true)
                                             }}
@@ -291,7 +265,7 @@ export default function MilestoneDetailPage() {
                                                         <td className="px-4 py-3">{assigned ? `${assigned.firstName} ${assigned.lastName}` : '-'}</td>
                                                         <td className="px-4 py-3 text-right">{s.estimateHours ? `${s.estimateHours}:00` : '-'}</td>
                                                         <td className="px-4 py-3 text-right">
-                                                            <button className="text-right w-full text-sm tp-text" onClick={(e) => { e.stopPropagation(); e.preventDefault(); showModal(<WorkLogsModal workLogs={workLogs.filter(w => w.subRequirementId === s.id)} users={users} />); }} aria-label="Zobrazit logy práce">{fmtHours(loggedH)}</button>
+                                                            <button className="text-right w-full text-sm tp-text" onClick={(e) => { e.stopPropagation(); e.preventDefault(); showModal(<WorkLogsModal workLogs={wlogs.filter(w => w.subRequirementId === s.id)} users={users} />); }} aria-label="Zobrazit logy práce">{fmtHours(loggedH)}</button>
                                                         </td>
                                                         <td className="px-4 py-3 text-right">
                                                             <div className="flex items-center justify-end gap-2">
@@ -315,47 +289,55 @@ export default function MilestoneDetailPage() {
                 <button className="text-sm tp-accent" onClick={(e) => { e.stopPropagation(); e.preventDefault(); setEditingRequirement(null); setTimeout(() => setRequirementModalOpen(true), 0); }}>+ požadavek</button>
             </div>
 
-            <TaskEditModal
+                <TaskEditModal
                 open={taskModalOpen}
                 onClose={() => { setTaskModalOpen(false); setEditingTask(null) }}
                 users={users}
                 initial={editingTask}
                 onSave={(task) => {
-                    if (!task.id || !subRequirementsState.find(s => s.id === task.id)) {
-                        const nextId = (subRequirementsState.reduce((m, s) => Math.max(m, s.id), 0) || 1100) + 1
+                    // update localSubs (no API provided for sub-requirements here)
+                    if (!task.id || !localSubs.find(s => s.id === task.id)) {
+                        const nextId = (localSubs.reduce((m, s) => Math.max(m, s.id), 0) || 1100) + 1
                         const newTask: SubRequirement = { ...task, id: nextId, milestoneId: milestone!.id }
-                        setSubRequirementsState(prev => [...prev, newTask])
-                        setReloadCounter(c => c + 1)
+                        setLocalSubs(prev => [...prev, newTask])
                     } else {
-                        setSubRequirementsState(prev => prev.map(s => s.id === task.id ? { ...s, ...task } : s))
-                        setReloadCounter(c => c + 1)
+                        setLocalSubs(prev => prev.map(s => s.id === task.id ? { ...s, ...task } : s))
                     }
                 }}
             />
 
-            <RequirementEditModal
+                <RequirementEditModal
                 open={requirementModalOpen}
                 onClose={() => { setRequirementModalOpen(false); setEditingRequirement(null) }}
                 projectId={pid}
                 initial={editingRequirement}
                 onSave={async (req) => {
-                    if (!req.id || !requirements.find(r => r.id === req.id)) {
+                    if (!req.id || !(requirementsMap[pid] || []).find(r => r.id === req.id)) {
                         await createRequirement(pid, { name: req.name, priority: req.priority, description: req.description, category: req.category, activity: req.activity })
                     } else {
                         await updateRequirement(req)
                     }
-                    setReloadCounter(c => c + 1)
+                    // refresh requirements and project data
+                    await reloadRequirements([pid])
+                    await reloadProjects()
                 }}
             />
 
-            <WorkLogModal
+                <WorkLogModal
                 open={workLogModalOpen}
                 onClose={() => { setWorkLogModalOpen(false); setWorkLogInitialSubId(null) }}
                 initialSubRequirementId={workLogInitialSubId}
                 users={users.map(u => ({ id: u.id, firstName: u.firstName, lastName: u.lastName }))}
                 onSave={async (payload) => {
                     await createWorkLog({ ...payload })
-                    setReloadCounter(c => c + 1)
+                    // clear worklogs cache and refresh derived data
+                    workLogs.clearCache()
+                    await reloadProjects()
+                    await reloadRequirements([pid], [mid])
+                    const w = await workLogs.getWorkLogsForMilestone(mid)
+                    const map = await workLogs.getLoggedBySubForMilestone(mid)
+                    setWlogs(w)
+                    setLoggedBySub(map)
                 }}
             />
 

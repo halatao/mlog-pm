@@ -7,6 +7,7 @@ import type {
   Requirement,
   SubRequirement,
   WorkLog,
+  DailyPlanItem,
 } from "./types";
 
 const sleep = (ms = 250) => new Promise((res) => setTimeout(res, ms));
@@ -218,9 +219,9 @@ const mockLoggedCapacities: LoggedCapacity[] = [
 
 export async function fetchUsers(projectId?: number): Promise<User[]> {
   await sleep();
-  if (typeof projectId === 'number') {
-    const ids = mockProjectUsers[projectId] || []
-    return mockUsers.filter(u => ids.includes(u.id))
+  if (typeof projectId === "number") {
+    const ids = mockProjectUsers[projectId] || [];
+    return mockUsers.filter((u) => ids.includes(u.id));
   }
   return [...mockUsers];
 }
@@ -256,7 +257,10 @@ export async function fetchPlannedCapacities(
   );
 }
 
-export async function updateProjectUsers(projectId: number, userIds: number[]): Promise<void> {
+export async function updateProjectUsers(
+  projectId: number,
+  userIds: number[]
+): Promise<void> {
   await sleep(200);
   mockProjectUsers[projectId] = [...userIds];
 }
@@ -345,102 +349,298 @@ export async function addMilestoneMonth(milestoneId: number): Promise<void> {
 /* ============================================================
    ODSTRANĚNÍ MĚSÍCE MILNÍKU
 ============================================================ */
-export async function removeMilestoneMonth(milestoneId: number, month: number, year: number): Promise<void> {
+export async function removeMilestoneMonth(
+  milestoneId: number,
+  month: number,
+  year: number
+): Promise<void> {
   await sleep(150);
   // remove planned capacities for that milestone/month/year
   for (let i = mockPlannedCapacities.length - 1; i >= 0; i--) {
-    const p = mockPlannedCapacities[i]
+    const p = mockPlannedCapacities[i];
     if (p.milestoneId === milestoneId && p.month === month && p.year === year) {
-      mockPlannedCapacities.splice(i, 1)
+      mockPlannedCapacities.splice(i, 1);
     }
   }
   // remove logged capacities for that milestone/month/year
   for (let i = mockLoggedCapacities.length - 1; i >= 0; i--) {
-    const l = mockLoggedCapacities[i]
+    const l = mockLoggedCapacities[i];
     if (l.milestoneId === milestoneId && l.month === month && l.year === year) {
-      mockLoggedCapacities.splice(i, 1)
+      mockLoggedCapacities.splice(i, 1);
     }
   }
 }
 
 const requirements: Requirement[] = [
-  { id: 1001, projectId: 1, name: 'Příprava specifikace', priority: 'vysoká', category: 'Analýza', activity: 'Analytika' },
-  { id: 1002, projectId: 1, name: 'Implementační úkoly', priority: 'střední', category: 'Vývoj', activity: 'Vývoj' },
-  { id: 2001, projectId: 2, name: 'Prototyp - obrazovky', priority: 'vysoká', category: 'Design', activity: 'Prototyp' },
-]
+  {
+    id: 1001,
+    projectId: 1,
+    name: "Příprava specifikace",
+    priority: "vysoká",
+    category: "Analýza",
+    activity: "Analytika",
+  },
+  {
+    id: 1002,
+    projectId: 1,
+    name: "Implementační úkoly",
+    priority: "střední",
+    category: "Vývoj",
+    activity: "Vývoj",
+  },
+  {
+    id: 2001,
+    projectId: 2,
+    name: "Prototyp - obrazovky",
+    priority: "vysoká",
+    category: "Design",
+    activity: "Prototyp",
+  },
+];
 
 const categories = [
-  { id: 1, name: 'Analýza' },
-  { id: 2, name: 'Vývoj' },
-  { id: 3, name: 'Design' },
-  { id: 4, name: 'Realizace kom.' },
-]
+  { id: 1, name: "Analýza" },
+  { id: 2, name: "Vývoj" },
+  { id: 3, name: "Design" },
+  { id: 4, name: "Realizace kom." },
+];
 
 const subRequirements: SubRequirement[] = [
-  { id: 1101, requirementId: 1001, milestoneId: 101, name: 'Analýza use-case', estimateHours: 8, assignedToId: 1 },
-  { id: 1102, requirementId: 1001, milestoneId: 101, name: 'Technické řešení', estimateHours: 12, assignedToId: 3 },
-  { id: 1201, requirementId: 1002, milestoneId: 102, name: 'Grid a layouty', estimateHours: 21, assignedToId: 4 },
-  { id: 1202, requirementId: 1002, milestoneId: 102, name: 'Přidávání měsíce v milníku', estimateHours: 10, assignedToId: 3 },
-  { id: 2101, requirementId: 2001, milestoneId: 201, name: 'Návrh obrazovek', estimateHours: 16, assignedToId: 2 },
-]
+  {
+    id: 1101,
+    requirementId: 1001,
+    milestoneId: 101,
+    name: "Analýza use-case",
+    estimateHours: 8,
+    assignedToId: 1,
+  },
+  {
+    id: 1102,
+    requirementId: 1001,
+    milestoneId: 101,
+    name: "Technické řešení",
+    estimateHours: 12,
+    assignedToId: 3,
+  },
+  {
+    id: 1201,
+    requirementId: 1002,
+    milestoneId: 102,
+    name: "Grid a layouty",
+    estimateHours: 21,
+    assignedToId: 4,
+  },
+  {
+    id: 1202,
+    requirementId: 1002,
+    milestoneId: 102,
+    name: "Přidávání měsíce v milníku",
+    estimateHours: 10,
+    assignedToId: 3,
+  },
+  {
+    id: 2101,
+    requirementId: 2001,
+    milestoneId: 201,
+    name: "Návrh obrazovek",
+    estimateHours: 16,
+    assignedToId: 2,
+  },
+];
 
 const workLogs: WorkLog[] = [
-  { id: 5001, subRequirementId: 1101, userId: 1, seconds: 3_600 * 5, date: '2025-10-12', description: 'Schůzka se zadavatelem' },
-  { id: 5002, subRequirementId: 1102, userId: 3, seconds: 3_600 * 6 + 30 * 60, date: '2025-10-15', description: 'Návrh architektury' },
-  { id: 5003, subRequirementId: 1201, userId: 4, seconds: 3_600 * 13 + 30 * 60, date: '2025-11-20', description: 'Layout + responzivita' },
-  { id: 5004, subRequirementId: 1202, userId: 3, seconds: 3_600 * 2, date: '2025-11-22', description: 'Implementační spike' },
-  { id: 5005, subRequirementId: 1202, userId: 3, seconds: 3_600 * 0 + 30 * 60, date: '2025-11-25', description: 'Drobná oprava' },
-]
+  {
+    id: 5001,
+    subRequirementId: 1101,
+    userId: 1,
+    seconds: 3_600 * 5,
+    date: "2025-10-12",
+    description: "Schůzka se zadavatelem",
+  },
+  {
+    id: 5002,
+    subRequirementId: 1102,
+    userId: 3,
+    seconds: 3_600 * 6 + 30 * 60,
+    date: "2025-10-15",
+    description: "Návrh architektury",
+  },
+  {
+    id: 5003,
+    subRequirementId: 1201,
+    userId: 4,
+    seconds: 3_600 * 13 + 30 * 60,
+    date: "2025-11-20",
+    description: "Layout + responzivita",
+  },
+  {
+    id: 5006,
+    subRequirementId: 1201,
+    userId: 4,
+    seconds: 3_600 * 13 + 30 * 60,
+    date: "2025-12-20",
+    description: "Layout + responzivita",
+  },
+  {
+    id: 5004,
+    subRequirementId: 1202,
+    userId: 3,
+    seconds: 3_600 * 2,
+    date: "2025-11-22",
+    description: "Implementační spike",
+  },
+  {
+    id: 5005,
+    subRequirementId: 1202,
+    userId: 3,
+    seconds: 3_600 * 0 + 30 * 60,
+    date: "2025-11-25",
+    description: "Drobná oprava",
+  },
+];
 
-export async function fetchRequirements(projectId?: number): Promise<Requirement[]> {
+const dailyPlans: DailyPlanItem[] = [];
+
+export async function fetchDailyPlanForUser(
+  userId: number,
+  date: string
+): Promise<DailyPlanItem[]> {
+  await sleep(100);
+  return dailyPlans.filter((d) => d.userId === userId && d.date === date);
+}
+
+export async function saveDailyPlanItem(payload: {
+  userId: number;
+  date: string;
+  subRequirementId: number;
+  checkedAt?: string;
+  loggedSeconds?: number;
+  id?: number;
+}): Promise<DailyPlanItem> {
+  await sleep(150);
+  if (payload.id) {
+    const idx = dailyPlans.findIndex((d) => d.id === payload.id);
+    if (idx >= 0) {
+      dailyPlans[idx] = { ...dailyPlans[idx], ...payload };
+      return dailyPlans[idx];
+    }
+  }
+  const nextId = dailyPlans.reduce((m, d) => Math.max(m, d.id), 0) + 1;
+  const entry: DailyPlanItem = {
+    id: nextId,
+    userId: payload.userId,
+    date: payload.date,
+    subRequirementId: payload.subRequirementId,
+    checkedAt: payload.checkedAt,
+    loggedSeconds: payload.loggedSeconds,
+  };
+  dailyPlans.push(entry);
+  return entry;
+}
+
+export async function removeDailyPlanItem(id: number): Promise<void> {
+  await sleep(100);
+  for (let i = dailyPlans.length - 1; i >= 0; i--) {
+    if (dailyPlans[i].id === id) dailyPlans.splice(i, 1);
+  }
+}
+
+export async function fetchRequirements(
+  projectId?: number
+): Promise<Requirement[]> {
   await sleep();
-  if (typeof projectId === 'number') return requirements.filter(r => r.projectId === projectId)
-  return [...requirements]
+  if (typeof projectId === "number")
+    return requirements.filter((r) => r.projectId === projectId);
+  return [...requirements];
 }
 
-export async function fetchCategories(): Promise<{ id: number; name: string }[]> {
-  await sleep(120)
-  return categories.map(c => ({ id: c.id, name: c.name }))
+export async function fetchCategories(): Promise<
+  { id: number; name: string }[]
+> {
+  await sleep(120);
+  return categories.map((c) => ({ id: c.id, name: c.name }));
 }
 
-export async function createRequirement(projectId: number, payload: { name: string; priority?: string; description?: string; category?: string; activity?: string }): Promise<Requirement> {
-  await sleep(200)
-  const nextId = requirements.reduce((m, r) => Math.max(m, r.id), 0) + 1
-  const r: Requirement = { id: nextId, projectId, name: payload.name, priority: payload.priority, description: payload.description, category: payload.category, activity: payload.activity }
-  requirements.push(r)
-  return r
+export async function createRequirement(
+  projectId: number,
+  payload: {
+    name: string;
+    priority?: string;
+    description?: string;
+    category?: string;
+    activity?: string;
+  }
+): Promise<Requirement> {
+  await sleep(200);
+  const nextId = requirements.reduce((m, r) => Math.max(m, r.id), 0) + 1;
+  const r: Requirement = {
+    id: nextId,
+    projectId,
+    name: payload.name,
+    priority: payload.priority,
+    description: payload.description,
+    category: payload.category,
+    activity: payload.activity,
+  };
+  requirements.push(r);
+  return r;
 }
 
 export async function updateRequirement(req: Requirement): Promise<void> {
-  await sleep(200)
-  const idx = requirements.findIndex(r => r.id === req.id)
-  if (idx >= 0) requirements[idx] = { ...requirements[idx], ...req }
+  await sleep(200);
+  const idx = requirements.findIndex((r) => r.id === req.id);
+  if (idx >= 0) requirements[idx] = { ...requirements[idx], ...req };
 }
 
-export async function fetchSubRequirementsForMilestone(milestoneId: number): Promise<SubRequirement[]> {
+export async function fetchSubRequirementsForMilestone(
+  milestoneId: number
+): Promise<SubRequirement[]> {
   await sleep();
-  return subRequirements.filter(s => s.milestoneId === milestoneId)
+  return subRequirements.filter((s) => s.milestoneId === milestoneId);
 }
 
-export async function fetchWorkLogsForMilestone(milestoneId: number): Promise<WorkLog[]> {
+export async function fetchWorkLogsForMilestone(
+  milestoneId: number
+): Promise<WorkLog[]> {
   await sleep();
-  const subIds = subRequirements.filter(s => s.milestoneId === milestoneId).map(s => s.id)  
-  return workLogs.filter(w => subIds.includes(w.subRequirementId))
+  const subIds = subRequirements
+    .filter((s) => s.milestoneId === milestoneId)
+    .map((s) => s.id);
+  return workLogs.filter((w) => subIds.includes(w.subRequirementId));
 }
 
-export async function fetchWorkLogsForProject(projectId: number): Promise<WorkLog[]> {
+export async function fetchWorkLogsForProject(
+  projectId: number
+): Promise<WorkLog[]> {
   await sleep();
-  const milestoneIds = mockMilestones.filter(m => m.projectId === projectId).map(m => m.id)
-  const subIds = subRequirements.filter(s => milestoneIds.includes(s.milestoneId)).map(s => s.id)
-  return workLogs.filter(w => subIds.includes(w.subRequirementId))
+  const milestoneIds = mockMilestones
+    .filter((m) => m.projectId === projectId)
+    .map((m) => m.id);
+  const subIds = subRequirements
+    .filter((s) => milestoneIds.includes(s.milestoneId))
+    .map((s) => s.id);
+  return workLogs.filter((w) => subIds.includes(w.subRequirementId));
 }
 
-export async function createWorkLog(payload: { subRequirementId: number; userId: number; seconds: number; date: string; description?: string }): Promise<WorkLog> {
-  await sleep(200)
-  const nextId = workLogs.reduce((m, w) => Math.max(m, w.id), 0) + 1
-  const entry: WorkLog = { id: nextId, subRequirementId: payload.subRequirementId, userId: payload.userId, seconds: payload.seconds, date: payload.date, description: payload.description }
-  workLogs.push(entry)
-  return entry
+export async function createWorkLog(payload: {
+  subRequirementId: number;
+  userId: number;
+  seconds: number;
+  date: string;
+  description?: string;
+}): Promise<WorkLog> {
+  await sleep(200);
+  const nextId = workLogs.reduce((m, w) => Math.max(m, w.id), 0) + 1;
+  const entry: WorkLog = {
+    id: nextId,
+    subRequirementId: payload.subRequirementId,
+    userId: payload.userId,
+    seconds: payload.seconds,
+    date: payload.date,
+    description: payload.description,
+  };
+  workLogs.push(entry);
+  return entry;
 }
 
 export default {

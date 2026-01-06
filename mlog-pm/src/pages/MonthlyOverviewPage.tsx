@@ -5,7 +5,9 @@ import PlanLoggedControls from '../components/shared/PlanLoggedControls'
 import CapacityLegend from '../components/shared/CapacityLegend'
 import MonthPager from '../components/shared/MonthPager'
 import EmployeeCapacityTable from '../components/shared/EmployeeCapacityTable'
-import { fetchProjects, fetchUsers, fetchMilestones, fetchPlannedCapacities, fetchLoggedCapacities } from '../api'
+import { useProjects } from '../contexts/ProjectsContext'
+import { useUsers } from '../contexts/UsersContext'
+import { useWorkLogs } from '../contexts/WorkLogsContext'
 import type { Project, ProjectMilestone, User } from '../types'
 import { getUserRole } from '../hooks/useRoles'
 import ProjectMilestonesTable from '../components/shared/ProjectMilestonesTable'
@@ -31,7 +33,8 @@ export default function MonthlyOverviewPage() {
 
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [users, setUsers] = useState<User[]>([])
+    const { projects, projectData, loading: projectsLoading } = useProjects()
+    const { users, loading: usersLoading } = useUsers()
     const [rows, setRows] = useState<Array<{
         project: Project
         milestone: ProjectMilestone
@@ -42,6 +45,7 @@ export default function MonthlyOverviewPage() {
         predictedCost: number
         predictedProfit: number
     }>>([])
+    const workLogs = useWorkLogs()
 
     const [showPlan, setShowPlan] = useState(true)
     const [showLogged, setShowLogged] = useState(true)
@@ -56,19 +60,18 @@ export default function MonthlyOverviewPage() {
 
     useEffect(() => {
         let mounted = true
-        async function load() {
+        async function assemble() {
             setLoading(true)
             try {
-                const [ps, us] = await Promise.all([fetchProjects(), fetchUsers()])
-                if (!mounted) return
-                setUsers(us)
+                if (projectsLoading || usersLoading) return
 
                 const allRows: typeof rows = []
 
-                await Promise.all(ps.map(async (p) => {
-                    const [milestones] = await Promise.all([fetchMilestones(p.id)])
-                    const planned = await fetchPlannedCapacities(p.id)
-                    const logged = await fetchLoggedCapacities(p.id)
+                const usersById = new Map(users.map(u => [u.id, u]))
+
+                for (const p of projects) {
+                    const data = projectData[p.id] || { milestones: [], planned: [], logged: [] }
+                    const { milestones, planned } = data
 
                     const plannedByMilestone = planned.reduce((map, entry) => {
                         const arr = map.get(entry.milestoneId) || []
@@ -77,26 +80,23 @@ export default function MonthlyOverviewPage() {
                         return map
                     }, new Map<number, typeof planned>())
 
-                    const loggedByMilestone = logged.reduce((map, entry) => {
-                        const arr = map.get(entry.milestoneId) || []
-                        arr.push(entry)
-                        map.set(entry.milestoneId, arr)
-                        return map
-                    }, new Map<number, typeof logged>())
 
-                    const usersById = new Map(us.map(u => [u.id, u]))
 
                     for (const ms of milestones) {
                         const allPlanned = plannedByMilestone.get(ms.id) || []
                         const plannedEntriesForMonth = allPlanned.filter(pp => pp.year === y && pp.month === m)
-                        const allLogged = loggedByMilestone.get(ms.id) || []
-                        const loggedEntriesForMonth = allLogged.filter(ll => ll.year === y && ll.month === m)
-
-                        const plannedByUser = Object.fromEntries(us.map(u => [u.id, 0])) as Record<number, number>
-                        const loggedByUser = Object.fromEntries(us.map(u => [u.id, 0])) as Record<number, number>
+                        const plannedByUser = Object.fromEntries(users.map(u => [u.id, 0])) as Record<number, number>
+                        const loggedByUser = Object.fromEntries(users.map(u => [u.id, 0])) as Record<number, number>
 
                         for (const pv of plannedEntriesForMonth) plannedByUser[pv.userId] = (plannedByUser[pv.userId] || 0) + (pv.plannedHours || 0)
-                        for (const lv of loggedEntriesForMonth) loggedByUser[lv.userId] = (loggedByUser[lv.userId] || 0) + (lv.loggedHours || 0)
+
+                        // use WorkLogsContext to compute logged hours per user for this milestone/month
+                        try {
+                            const loggedMap = await workLogs.getLoggedByUserForMilestone(ms.id, m, y)
+                            Object.entries(loggedMap).forEach(([uidStr, hrs]) => { loggedByUser[Number(uidStr)] = hrs })
+                        } catch {
+                            // fallback: leave zeros or use any available logged list
+                        }
 
                         const plannedTotalForMilestone = allPlanned.reduce((s, pv) => s + (pv.plannedHours || 0), 0)
                         const plannedThisMonthTotal = plannedEntriesForMonth.reduce((s, pv) => s + (pv.plannedHours || 0), 0)
@@ -120,7 +120,7 @@ export default function MonthlyOverviewPage() {
 
                         allRows.push({ project: p, milestone: ms, plannedByUser, loggedByUser, incomeForMonth, valueForMonth, predictedCost, predictedProfit })
                     }
-                }))
+                }
 
                 if (!mounted) return
                 setRows(allRows)
@@ -131,9 +131,9 @@ export default function MonthlyOverviewPage() {
                 setLoading(false)
             }
         }
-        load()
+        void assemble()
         return () => { mounted = false }
-    }, [y, m])
+    }, [projects, projectData, users, projectsLoading, usersLoading, y, m, workLogs])
 
     const title = useMemo(() => texts.pages.monthlyOverview.title.split('—')[0].trim(), [texts])
 

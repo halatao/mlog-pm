@@ -113,7 +113,6 @@ const CapacityMatrix = forwardRef<MatrixHandle, AllProps>(function CapacityMatri
         isSaving: () => saving,
     }), [dirty, saving, handleSave])
 
-    // month-edit modal state
     const [editMonthOpen, setEditMonthOpen] = useState(false)
     const [editingMilestone, setEditingMilestone] = useState<ProjectMilestone | null>(null)
     const [editingRow, setEditingRow] = useState<{ month: number; year: number } | null>(null)
@@ -123,8 +122,6 @@ const CapacityMatrix = forwardRef<MatrixHandle, AllProps>(function CapacityMatri
         setEditingRow(row)
         setEditMonthOpen(true)
     }
-
-    
 
     return (
         <div className="rounded-md tp-text">

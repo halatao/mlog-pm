@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react'
 import type { ProjectMilestone, PlannedCapacity, LoggedCapacity, User } from '../../types'
 import CapacityCell from './CapacityCell';
+import { useWorkLogs } from '../../contexts/WorkLogsContext'
 
 interface Props {
   m: ProjectMilestone
@@ -20,6 +22,23 @@ export default function MilestoneMonthRow({ m, row, visibleUsers, planned, logge
   let sumPlanned = 0
   let sumPlannedCost = 0
   let sumLoggedCost = 0
+  const workLogs = useWorkLogs()
+  const [userLoggedMap, setUserLoggedMap] = useState<Record<number, number>>({})
+
+  useEffect(() => {
+    let mounted = true
+    async function load() {
+      try {
+        const map = await workLogs.getLoggedByUserForMilestone(m.id, row.month, row.year)
+        if (!mounted) return
+        setUserLoggedMap(map)
+      } catch (err) {
+        console.debug('Failed to load milestone worklogs', err)
+      }
+    }
+    void load()
+    return () => { mounted = false }
+  }, [workLogs, m.id, row.month, row.year])
 
   visibleUsers.forEach(u => {
     const plannedEntry = planned.find(p => p.userId === u.id && p.milestoneId === m.id && p.month === row.month && p.year === row.year)
@@ -27,7 +46,7 @@ export default function MilestoneMonthRow({ m, row, visibleUsers, planned, logge
     const key = keyFor(u.id, m.id, row.month, row.year)
     const edited = edits[key]
     const displayPlanned = edited !== undefined ? edited : (plannedEntry ? plannedEntry.plannedHours : 0)
-    const displayLogged = loggedEntry ? loggedEntry.loggedHours : 0
+    const displayLogged = (userLoggedMap[u.id] !== undefined) ? userLoggedMap[u.id] : (loggedEntry ? loggedEntry.loggedHours : 0)
     sumPlanned += displayPlanned
     sumPlannedCost += displayPlanned * (u.costPerHour || 0)
     sumLoggedCost += displayLogged * (u.costPerHour || 0)
@@ -53,7 +72,7 @@ export default function MilestoneMonthRow({ m, row, visibleUsers, planned, logge
         const key = keyFor(u.id, m.id, row.month, row.year)
         const edited = edits[key]
         const displayPlanned = edited !== undefined ? edited : (plannedEntry ? plannedEntry.plannedHours : 0)
-        const displayLogged = loggedEntry ? loggedEntry.loggedHours : 0
+        const displayLogged = (userLoggedMap[u.id] !== undefined) ? userLoggedMap[u.id] : (loggedEntry ? loggedEntry.loggedHours : 0)
         return (
           <CapacityCell
             key={`${u.id}-${m.id}-${row.year}-${row.month}`}
